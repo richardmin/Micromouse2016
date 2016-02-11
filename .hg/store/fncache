@@ -1,0 +1,4 @@
+data/main.cpp.i
+data/AVEncoder.lib.i
+data/QEI.lib.i
+data/mbed-src-AV.lib.i
