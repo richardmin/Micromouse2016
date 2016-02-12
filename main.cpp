@@ -70,11 +70,11 @@ int main()  //
         setLeftPwm(leftSpeed);
         setRightPwm(rightSpeed);
                 
-        if(1000*IR_right.read() < rightLED - 50)
+        if(1000*IR_right_back.read() < rightLED - 50)
         {
         	turnRight();
         }
-        else if(1000*IR_left.read() < leftLED - 50)
+        else if(1000*IR_left_back.read() < leftLED - 50)
         {
         	turnLeft();
         }
