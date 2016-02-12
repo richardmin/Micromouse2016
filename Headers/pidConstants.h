@@ -11,3 +11,14 @@ int prevError = 0;
 double ki = 0.00005;
 int integrator = 0;
 int decayFactor = 10;
+
+
+// IR variables
+float leftForwardLED = 0;
+float rightForwardLED = 0;
+
+float leftBackLED = 0;
+float rightBackLED = 0;
+
+int LEDOnTime = 1000;
+

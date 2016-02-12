@@ -2,39 +2,52 @@
 #include "AVEncoder.h"
 #include "Headers/pinouts.h"
 #include "Headers/pidConstants.h"
-
+#include "MazeMapper/mazeMapper.h"
 #include "PID/pidController.h"
 
 // Interrupt controller
 Ticker interrupt;
 
-// IR variables
-float leftLED = 0;
-float rightLED = 0;
 
 //Turn variables
 bool turn = false;
 
-int main() 
+int main()  //
 {    
 
 	//set up IR
-	IR_left_pwr = 1;
-	for(int i = 0; i < 1000; i++)
+	IR_left_forward_pwr = 1;
+	for(int i = 0; i < LEDOnTime; i++)
 	{
-		leftLED += IR_left.read();
+		leftForwardLED += IR_left_front.read();
 	}
-	IR_left_pwr = 0;
+	IR_left_forward_pwr = 0;
 	
-	IR_right_pwr = 1;
-	for(int i = 0; i < 1000; i++)
+	IR_right_forward_pwr = 1;
+	for(int i = 0; i < LEDOnTime; i++)
 	{
-		rightLED += IR_right.read();
+		rightForwardLED += IR_right_front.read();
 	}
-	IR_right_pwr = 0;
+	IR_right_forward_pwr = 0;
+
+	IR_left_back_pwr = 1;
+	for(int i = 0; i < LEDOnTime; i++)
+	{
+		leftBackLED += IR_left_back.read();
+	}
+	IR_left_back_pwr = 0;
+
+	IR_right_front_pwr = 1;
+	for(int i = 0; i < LEDOnTime; i++)
+	{
+		rightBackLED += IR_right_back.read();
+	}
+	IR_right_front_pwr = 0;
 	
-	printf("Initial right: %f\r\n", 1000*rightLED);
-	printf("Initial left: %f\r\n", 1000*leftLED);
+	printf("Initial right forward: %f\r\n", 1000*rightForwardLED);
+	printf("Initial left forward: %f\r\n", 1000*leftForwardLED);
+	printf("Initial right back: %f\r\n", 1000*rightBackLED);
+	printf("Initial left back: %f\r\n", 1000*leftBackLED);
 	
 
 
@@ -42,7 +55,7 @@ int main()
 	
 	//wait for button press to start
 	while(mybutton == 1);
-    //interrupt.attach_us(&pid, 1000);
+    interrupt.attach_us(&pid, 1000);
     timer.start();
     
     leftSpeed = 0.48;

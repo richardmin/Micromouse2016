@@ -18,8 +18,12 @@ AVEncoder RightEncoder(PA_1, PA_2);
 AnalogIn gyro(A0);
 
 // Controller for IRs
-AnalogIn IR_left(A5);
-AnalogIn IR_right(A3);
+AnalogIn IR_left_front(A5);
+AnalogIn IR_right_front(A3);
+AnalogIn IR_left_back(A0);
+AnalogIn IR_right_back(A0);
 
-DigitalOut IR_left_pwr(D15);
-DigitalOut IR_right_pwr(D7);
+DigitalOut IR_left_forward_pwr(D15);
+DigitalOut IR_right_forward_pwr(D7);
+DigitalOut IR_left_back_pwr(D0); 
+DigitalOut IR_right_back_pwr(D0);
