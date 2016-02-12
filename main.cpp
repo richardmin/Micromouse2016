@@ -48,13 +48,14 @@ int main()  //
 	printf("Initial left forward: %f\r\n", 1000*leftForwardLED);
 	printf("Initial right back: %f\r\n", 1000*rightBackLED);
 	printf("Initial left back: %f\r\n", 1000*leftBackLED);
-	
+	//TODO: Use this to calibrate the IR Leds
 
 
     myled = 1;
 	
 	//wait for button press to start
 	while(mybutton == 1);
+
     interrupt.attach_us(&pid, 1000);
     timer.start();
     
