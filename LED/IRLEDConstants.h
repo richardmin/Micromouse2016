@@ -14,4 +14,11 @@ float measured_right_forward;
 float measured_left_back;
 float measured_right_back;
 
+
+
+// Default amount of time we're polling our IR LEDs
+int LED_ON_TIME = 1000;
+
+int LED_HIST_SIZE = 10;
+
 #endif
