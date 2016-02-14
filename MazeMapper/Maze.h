@@ -3,7 +3,7 @@
 
 class Maze {
 	public:
-		int calculateDistance(wall w, int PIDValue);
+		int calculateDistance(Wall w, int PIDValue);
 	private:
 		int walls[MAZE_VERTICAL_WALLS][MAZE_HORIZONTAL_WALLS];
 		

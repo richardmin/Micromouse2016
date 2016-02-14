@@ -1,35 +1,43 @@
 #include "Location.h"
 
 
-Location::Location() {
+Location::Location() 
+{
 	x = 0, y = 0;
 }
-int Location::getX() {
+int Location::getX() 
+{
 	return (int) x;
 }
 
-int Location::getY() {
+int Location::getY() 
+{
 	return (int) y;
 }
 
-float Location::getExactX() {
+float Location::getExactX() 
+{
 	return x;
 }
 
-float Location::getExactY() {
+float Location::getExactY() 
+{
 	return y;
 }
 
-void Location::update(float amtX, float amtY) {
+void Location::update(float amtX, float amtY) 
+{
 	x += amtX;
 	y += amtY;
 }
 
-void Location::updateX(float amt) {
+void Location::updateX(float amt) 
+{
 	x += amt;
 }
 
-void Location::updateY(float amt) {
+void Location::updateY(float amt) 
+{
 	y += amt;
 }
 

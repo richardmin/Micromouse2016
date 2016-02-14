@@ -14,10 +14,10 @@ Maze::Maze()
 	for(int i = 0; i < MAZE_VERTICAL_WALLS; i++)
 	{
 		walls[i][0] = 1;
-		walls[i][width] = 1;
+		walls[i][MAZE_WIDTH] = 1;
 		for(int j = 0; j < MAZE_HORIZONTAL_WALLS; j++)
 		{
-			walls[height][j] = 1;
+			walls[MAZE_HEIGHT][j] = 1;
 			walls[0][j] = 1;
 		}
 	}
@@ -41,3 +41,5 @@ void Maze::updateWalls(Wall w, int distance, Location l)
 	//for now, we assume there's no collisions
 	walls[adjustedX][adjustedY] = 1;
 }
+
+void Maze::calculateDistance(Wall w, int PIDValue)
