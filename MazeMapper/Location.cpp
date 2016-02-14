@@ -41,3 +41,8 @@ void Location::updateY(float amt)
 	y += amt;
 }
 
+void Location::set(float X, float Y)
+{
+	x = X;
+	y = Y;
+}

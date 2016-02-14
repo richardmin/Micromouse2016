@@ -1,3 +1,5 @@
+#ifndef PINOUTS_H
+#define PINOUTS_H
 // Just help us know when code started running
 DigitalOut myled(LED1);
 DigitalIn mybutton(USER_BUTTON);
@@ -27,3 +29,5 @@ DigitalOut IR_left_forward_pwr(D15);
 DigitalOut IR_right_forward_pwr(D7);
 DigitalOut IR_left_back_pwr(D0); 
 DigitalOut IR_right_back_pwr(D0);
+
+#endif

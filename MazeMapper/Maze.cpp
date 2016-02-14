@@ -1,8 +1,8 @@
 #include "Maze.h"
 
-
 Maze::Maze()
 {
+	//initialize the walls to not be existent: 0 means they dont' exist
 	for(int i = 0; i < MAZE_VERTICAL_WALLS; i++)
 	{
 		for(int j = 0; j < MAZE_HORIZONTAL_WALLS; j++)
@@ -11,6 +11,7 @@ Maze::Maze()
 		}
 	}
 
+	//initialize the edge walls
 	for(int i = 0; i < MAZE_VERTICAL_WALLS; i++)
 	{
 		walls[i][0] = 1;
@@ -21,8 +22,6 @@ Maze::Maze()
 			walls[0][j] = 1;
 		}
 	}
-
-
 }
 
 void Maze::updateWalls(Wall w, int distance, Location l)
@@ -43,3 +42,6 @@ void Maze::updateWalls(Wall w, int distance, Location l)
 }
 
 void Maze::calculateDistance(Wall w, int PIDValue)
+{
+
+}

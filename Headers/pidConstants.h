@@ -1,4 +1,5 @@
-
+#ifndef PIN_CONSTANTS_H
+#define PIN_CONSTANTS_H
 // P variables
 double kp = 0.00043;
 
@@ -22,3 +23,5 @@ float rightBackLED = 0;
 
 int LEDOnTime = 1000;
 
+
+#endif
