@@ -3,26 +3,29 @@
 
 Maze::Maze()
 {
-	for(int i = 0; i < width+1; i++)
+	for(int i = 0; i < MAZE_VERTICAL_WALLS; i++)
 	{
-		for(int j = 0; j < height+1; j++)
+		for(int j = 0; j < MAZE_HORIZONTAL_WALLS; j++)
 		{
 			walls[i][j] = 0;
 		}
 	}
 
-	for(int i = 0; i < width+1; i++)
+	for(int i = 0; i < MAZE_VERTICAL_WALLS; i++)
 	{
 		walls[i][0] = 1;
-		walls[0][i] = 1;
 		walls[i][width] = 1;
-		walls[height][i] = 1;
+		for(int j = 0; j < MAZE_HORIZONTAL_WALLS; j++)
+		{
+			walls[height][j] = 1;
+			walls[0][j] = 1;
+		}
 	}
 
 
 }
 
-void Maze::updateWalls(wall w, int distance, Location l)
+void Maze::updateWalls(Wall w, int distance, Location l)
 {
 	int adjustedX, adjustedY;
 	if(w == frontLeft)

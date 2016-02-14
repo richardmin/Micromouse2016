@@ -1,20 +1,20 @@
-#include "MapperConstants.h"
-
+#include "MazeConstants.h"
+#include "Location.h"
 
 class Maze {
 	public:
-		void updateWalls(wall w, int distance, Location l);
 		int calculateDistance(wall w, int PIDValue);
 	private:
-		int width = 36;
-		int height = 36;
-		int walls[height+1][width+1];
+		int walls[MAZE_VERTICAL_WALLS][MAZE_HORIZONTAL_WALLS];
 		
 		bool forwardLeftWall;
 		bool forwardRightWall;
 
 		bool closeLeftWall;
 		bool closeRightWall;
+
+
+		void updateWalls(Wall w, int distance, Location l);
 
 };
 
