@@ -2,7 +2,7 @@
 
 
 Location::Location() {
-	x, y = 0;
+	x = 0, y = 0;
 }
 int Location::getX() {
 	return (int) x;
