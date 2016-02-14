@@ -1,7 +1,4 @@
-
-
-enum wall {frontLeft, frontRight, closeLeft, closeRight};
-
+#include "MapperConstants.h"
 
 
 class Maze {
@@ -18,4 +15,6 @@ class Maze {
 
 		bool closeLeftWall;
 		bool closeRightWall;
-}
+
+};
+
