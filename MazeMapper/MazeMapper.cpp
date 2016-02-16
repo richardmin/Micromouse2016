@@ -4,14 +4,39 @@ MazeMapper::MazeMapper()
 {
     map = new Maze();
     led = new LEDCollector();
-    currLoc = new Location();
-    goals[1] = new Location();
-    goals[2] = new Location();
-    goals[3] = new Location();
-    goals[4] = new Location();
+    //gyro
+    currLoc = new Location(0, 0);
 }
 
 void MazeMapper::updateLEDS()
 {
 
+}
+
+void MazeMapper::updateAngle()
+{
+	//code to read from gyro
+}
+
+void MazeMapper::updatePosition()
+{
+	//code to read encoders (pid dump?)
+}
+
+void MazeMapper::decideDirection()
+{
+	
+}
+
+void MazeMapper::runFloodFill()
+{
+	//please note that we should do this in an FSM so that we can make decisions instantaneously.
+	//This means that floodfill should actually be a separate thread.
+	//I'll set this up later.
+}
+
+bool MazeMapper::isInGoalSquares(Location l)
+{
+	return l.getX() < MAZE_WIDTH/2+1 && l.getX() > MAZE_WIDTH/2-1
+			&& l.getY() < MAZE_HEIGHT/2+1 && l.getY() > MAZE_HEIGHT/2-1; 
 }
