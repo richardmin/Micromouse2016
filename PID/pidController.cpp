@@ -1,5 +1,12 @@
 #include "PID/pidController.h"
-void pid()
+#include <cmath>
+
+
+pidController::pidController() {
+	//default constructor does nothing
+}
+
+void pidController::pid()
 {
 	if(turn)
 		return;
@@ -48,12 +55,12 @@ void pid()
 	timer.reset();
 }
 
-double P_controller(int error)
+double pidController::P_controller(int error)
 {
     return (kp*error);
 }
 
-double D_controller(int error)
+double pidController::D_controller(int error)
 {	
 	double dError = error - prevError;
 		
@@ -65,7 +72,7 @@ double D_controller(int error)
 	return kd*dError/dt;
 }
 
-double I_controller(int error)
+double pidController::I_controller(int error)
 {
 	integrator += error;
 	double correction = ki * integrator;
@@ -74,7 +81,7 @@ double I_controller(int error)
     return correction;
 }
 
-void setLeftPwm(double speed) 
+void pidController::setLeftPwm(double speed) 
 {
     if(speed == 0)
     {
@@ -94,7 +101,7 @@ void setLeftPwm(double speed)
 }
 
 //todo: make this have ramping
-void setRightPwm(double speed) 
+void pidController::setRightPwm(double speed) 
 {
     if(speed > 0)
     {
@@ -108,13 +115,13 @@ void setRightPwm(double speed)
     }
 }
 
-void stop()
+void pidController::stop()
 {
     setLeftPwm(0);
     setRightPwm(0);
 }
 
-void turnLeft()
+void pidController::turnLeft()
 {
 	for(int i = 0; i < 1000; i++)
 	{
@@ -137,7 +144,7 @@ void turnLeft()
 	}
 }
 
-void turnRight()
+void pidController::turnRight()
 {
 	for(int i = 0; i < 1000; i++)
 	{
