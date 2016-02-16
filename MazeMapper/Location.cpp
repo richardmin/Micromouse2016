@@ -1,4 +1,4 @@
-#include "Location.h"
+#include "MazeMapper/Location.h"
 
 
 Location::Location() 

@@ -1,6 +1,9 @@
+#ifndef PID_CONTROLLER_H
+#define PID_CONTROLLER_H
 //http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/s2004/rd73/476finalpro.htm
 #include <cmath>
-#include "Motor/MotorController.h"
+#include "PID/pidConstants.h"
+
 
 void pid();
 
@@ -22,3 +25,5 @@ void turnLeft();
 double leftSpeed;
 double rightSpeed;
 int STOP = 0;
+
+#endif

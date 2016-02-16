@@ -1,8 +1,8 @@
 #ifndef MAZE_H
 #define MAZE_H
 
-#include "MazeConstants.h"
-#include "Location.h"
+#include "MazeMapper/MazeConstants.h"
+#include "MazeMapper/Location.h"
 
 class Maze {
 	public:

@@ -1,11 +1,9 @@
-#include "IRLEDConstants.h"
-#include "Headers/pinConstants.h"
-#include "Headers/pinouts.h" 
+#include "LED/IRLEDConstants.h"
+#include "PINS/pinouts.h" 
 
 #ifndef LEDCOLLECTOR_H
 #define LEDCOLLECTOR_H
 
-class asdf;
 
 class LEDCollector 
 {

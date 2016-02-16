@@ -1,4 +1,4 @@
-#include "Maze.h"
+#include "MazeMapper/Maze.h"
 
 Maze::Maze()
 {
