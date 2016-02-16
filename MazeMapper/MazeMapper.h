@@ -19,8 +19,8 @@ class MazeMapper {
 
 		void decideDirection();
 		void runFloodFill();
+		void resetRun();
 
-		
 		bool isInGoalSquares();
 
 	private:

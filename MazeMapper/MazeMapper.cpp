@@ -25,7 +25,13 @@ void MazeMapper::updatePosition()
 
 void MazeMapper::decideDirection()
 {
-	
+
+}
+
+void MazeMapper::resetRun()
+{
+	currLoc.updateX(0);
+	currLoc.updateY(0);
 }
 
 void MazeMapper::runFloodFill()

@@ -12,14 +12,24 @@ int main()
 {    
     Location curLoc = new Location(0, 0);
     pidController pid = new pidController();
-    
 
+
+    while(1); //back up straight, until we give go ahead to PIDs
+
+    //this way the LED's get initialized properly
+    MazeRunner runner = new MazeRunner();
+    MazeMapper mapper = new MazeMapper();
+    
     //prepare pid
     interrupt.attach_us(&pid.pid(), 1000);
     timer.start();
     
-    while(1)
+    bool hasMapped = false;
+
+    while(!hasMapped) //do mapping mode until we decide otherwise
     {
-        //do maze mapping code here
+        
     }
+
+    //attach an interrrupt for a button to reset run (location reset to 0)
 }
