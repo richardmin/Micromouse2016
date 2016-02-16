@@ -39,6 +39,13 @@ void MazeMapper::runFloodFill()
 	//please note that we should do this in an FSM so that we can make decisions instantaneously.
 	//This means that floodfill should actually be a separate thread.
 	//I'll set this up later.
+	pthread_create(&floodFillThread, NULL, floodFill, NULL);
+
+}
+
+void MazeMapper::floodFillThread()
+{
+	//take position globals + LED data to map maze
 }
 
 bool MazeMapper::isInGoalSquares(Location l)

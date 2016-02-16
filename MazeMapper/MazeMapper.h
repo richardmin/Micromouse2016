@@ -5,6 +5,7 @@
 #include "MazeMapper/Maze.h"
 #include "MazeMapper/MazeConstants.h"
 #include "LED/LEDCollector.h"
+#include <pthread.h>
 
 class Location;
 class Maze;
@@ -27,7 +28,8 @@ class MazeMapper {
 		Maze map;
 		LEDCollector led;
 		Location currLoc;
-
+		
+		pthread_t floodFillThread;
 };
 
 #endif
