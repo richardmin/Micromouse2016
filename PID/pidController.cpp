@@ -3,8 +3,12 @@
 
 
 pidController::pidController() {
-	//default constructor does nothing
+	prevError = 0;
+	leftSpeed = 0;
+	rightSpeed = 0;
+	integrator = 0;
 }
+
 
 void pidController::pid()
 {
@@ -54,6 +58,7 @@ void pidController::pid()
 	RightEncoder.reset();
 	timer.reset();
 }
+
 
 double pidController::P_controller(int error)
 {

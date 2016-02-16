@@ -1,12 +1,9 @@
 #include "mbed.h"
 #include "AVEncoder.h"
-#include "Headers/pinouts.h"
-#include "Headers/pidConstants.h"
+#include "PINS/pinouts.h"
 #include "MazeMapper/mazeMapper.h"
 #include "PID/pidController.h"
-
-// Interrupt controller
-Ticker interrupt;
+#include "PID/pidConstants.h"
 
 
 //Turn variables

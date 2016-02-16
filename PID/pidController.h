@@ -25,14 +25,14 @@ class pidController {
 		double D_controller(int error);
 		double I_controller(int error);
 
-		
+
 		void setRightPwm(double speed); 
 		void setLeftPwm(double speed);
 
 
 		double leftSpeed;
 		double rightSpeed;
-		int STOP = 0;
+		int integrator;
 };
 
 
