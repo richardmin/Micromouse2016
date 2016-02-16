@@ -9,6 +9,7 @@ class LEDCollector
 {
 	public:
 		void pollLEDs(int milliseconds);
+		LEDCollector();
 	private:
 		float leftForwardLED = 0;
 		float rightForwardLED = 0;

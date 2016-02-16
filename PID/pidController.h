@@ -17,6 +17,9 @@ class pidController {
 		// Functions to control turning
 		void turnRight();
 		void turnLeft();
+
+		
+		pidController();
 	private:
 		// Variables to control speed
 

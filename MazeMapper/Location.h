@@ -15,6 +15,9 @@ class Location {
 
 		void set(float X, float Y);
 
+		Location(int X, int Y);
+		Location();
+
 	private:
 		float x;
 		float y;

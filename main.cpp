@@ -1,40 +1,25 @@
 #include "mbed.h"
 #include "AVEncoder.h"
 #include "PINS/pinouts.h"
-#include "MazeMapper/mazeMapper.h"
+#include "MazeMapper/Maze.h"
+#include "MazeMapper/Location.h"
+#include "LED/LEDCollector.h"
 #include "PID/pidController.h"
 #include "PID/pidConstants.h"
 
 
-//Turn variables
-bool turn = false;
-
-int main()  //
+int main()  
 {    
-	//wait for button press to start
-	while(mybutton == 1);
+    Location curLoc = new Location(0, 0);
+    pidController pid = new pidController();
+    
 
-    interrupt.attach_us(&pid, 1000);
+    //prepare pid
+    interrupt.attach_us(&pid.pid(), 1000);
     timer.start();
-    
-    leftSpeed = 0.48;
-    rightSpeed = 0.5;
-    
-    IR_left_pwr = 1;
-    IR_right_pwr = 1;
     
     while(1)
     {
-        setLeftPwm(leftSpeed);
-        setRightPwm(rightSpeed);
-                
-        if(1000*IR_right_back.read() < rightLED - 50)
-        {
-        	turnRight();
-        }
-        else if(1000*IR_left_back.read() < leftLED - 50)
-        {
-        	turnLeft();
-        }
+        //do maze mapping code here
     }
 }
