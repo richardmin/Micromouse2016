@@ -10,7 +10,7 @@ MazeMapper::MazeMapper()
 
 void MazeMapper::updateLEDS()
 {
-
+	
 }
 
 void MazeMapper::updateAngle()
@@ -46,6 +46,8 @@ void MazeMapper::runFloodFill()
 void MazeMapper::floodFillThread()
 {
 	//take position globals + LED data to map maze
+	
+	pthread_exit(NULL);
 }
 
 bool MazeMapper::isInGoalSquares(Location l)
