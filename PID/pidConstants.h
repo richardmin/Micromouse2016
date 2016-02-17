@@ -17,6 +17,8 @@ int decayFactor = 10;
 Ticker interrupt;
 Timer timer;
 
+Timer gyroTimer;
+
 
 
 #endif

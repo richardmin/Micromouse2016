@@ -23,6 +23,7 @@ int main()
     //prepare pid
     interrupt.attach_us(&pid.pid(), 1000);
     timer.start();
+    gyroTimer.start();
     
     bool hasMapped = false;
 
