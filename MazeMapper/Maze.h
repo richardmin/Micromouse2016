@@ -8,6 +8,13 @@ class Maze {
 	public:
 		int calculateDistance(Wall w, int PIDValue);
 		Maze();
+
+
+		bool hasLeftWall(Location l);
+		bool hasRightWall(Location l);
+		bool hasFrontWall(Location l);
+
+		
 	private:
 		int walls[MAZE_VERTICAL_WALLS][MAZE_HORIZONTAL_WALLS]; //array of walls
 		

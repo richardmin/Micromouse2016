@@ -24,6 +24,7 @@ class MazeMapper {
 
 		bool isInGoalSquares();
 
+
 	private:
 		Maze map;
 		LEDCollector led;
