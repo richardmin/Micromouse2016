@@ -16,7 +16,7 @@ class Maze {
 
 		
 	private:
-		int walls[MAZE_VERTICAL_WALLS][MAZE_HORIZONTAL_WALLS]; //array of walls
+		int walls[MAZE_VERTICAL_WALLS][MAZE_HORIZONTAL_WALLS]; //array of walls N
 		
 		bool forwardLeftWall;
 		bool forwardRightWall;

@@ -3,7 +3,7 @@
 
 Location::Location() 
 {
-	x = 0, y = 0;
+	x = MAZE_WIDTH-1, y = MAZE_HEIGHT-1;
 }
 
 Location::Location(int X, int Y)

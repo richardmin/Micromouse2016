@@ -5,7 +5,7 @@ MazeMapper::MazeMapper()
     map = new Maze();
     led = new LEDCollector();
     //gyro
-    currLoc = new Location(0, 0);
+    currLoc = new Location(0, MAZE_HEIGHT-1);
 }
 
 void MazeMapper::updateLEDS()

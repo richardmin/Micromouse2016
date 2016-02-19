@@ -46,17 +46,22 @@ void Maze::calculateDistance(Wall w, int PIDValue)
 	//this may not be the right place for this function
 }
 
-bool Maze::hasLeftWall(Location l)
+bool Maze::hasNorthWall(Location l)
 {
 	return walls[l.getX()][l.getY()];
 }
 
-bool Maze::hasRightWall(Location l)
+bool Maze::hasSouthWall(Location l)
+{
+	return walls[l.getX()][l.getY()+1]
+}
+
+bool Maze::hasEastWall(Location l)
 {
 	return walls[l.getX()+1][l.getY()];
 }
 
-bool Maze::hasFrontWall(Location l)
+bool Maze::hasWestWall(Location l)
 {
-	return walls[l.getX()][l.getY()-1];
+	return walls[l.getX()][l.getY()];
 }
