@@ -13,12 +13,4 @@ double ki = 0.00005;
 int decayFactor = 10;
 
 
-// Interrupt controller
-Ticker interrupt;
-Timer timer;
-
-Timer gyroTimer;
-
-
-
 #endif

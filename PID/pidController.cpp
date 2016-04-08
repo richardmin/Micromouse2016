@@ -1,4 +1,4 @@
-#include "PID/pidController.h"
+#include "pidController.h"
 #include <cmath>
 
 
@@ -7,8 +7,8 @@ pidController::pidController() {
 	leftSpeed = 0;
 	rightSpeed = 0;
 	integrator = 0;
+	turn = 0;
 }
-
 
 void pidController::pid()
 {
@@ -50,15 +50,11 @@ void pidController::pid()
     {
         rightSpeed = 1;
     }
-    
-    //printf("ERROR: %d\tCHANGE: %f\r\nLEFT: %d\r\nRIGHT: %d\r\n\r\n", error, change, LeftEncoder.getPulses()/2, RightEncoder.getPulses()-12);
-    //printf("LEFT: %f\tRIGHT: %f\r\n", leftSpeed, rightSpeed);
 	
 	LeftEncoder.reset();
 	RightEncoder.reset();
 	timer.reset();
 }
-
 
 double pidController::P_controller(int error)
 {
@@ -105,7 +101,6 @@ void pidController::setLeftPwm(double speed)
     }
 }
 
-//todo: make this have ramping
 void pidController::setRightPwm(double speed) 
 {
     if(speed > 0)
