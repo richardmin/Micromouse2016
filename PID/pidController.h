@@ -44,21 +44,9 @@ class pidController {
 		// Determines if we are currently turning
 		int turn;
 		
-		// Controllers for right motor
-		PwmOut RMotorReverse(PB_6);
-		PwmOut RMotorForward(PA_7);
-		
-		// Controllers for left motor
-		PwmOut LMotorForward(PB_10);
-		PwmOut LMotorReverse(PB_4);
-		
 		// Interrupt controller variables
 		Ticker interrupt;
 		Timer timer;
-		
-		// Controllers for left and right encoders
-		AVEncoder LeftEncoder(M1, M2);
-		AVEncoder RightEncoder(M1, M2);
 };
 
 
