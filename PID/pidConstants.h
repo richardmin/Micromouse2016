@@ -1,24 +1,16 @@
 #ifndef PID_CONSTANTS_H
 #define PID_CONSTANTS_H
 
-double kp = 0.00043;
+static double kp = 0.00043;
 
 // Derivative variables
-double kd = 0.0009;
+static double kd = 0.0009;
 
-int STOP = 0;
+static int STOP = 0;
 
 // Integral variables
-double ki = 0.00005;
-int decayFactor = 10;
-
-
-// Interrupt controller
-Ticker interrupt;
-Timer timer;
-
-Timer gyroTimer;
-
+static double ki = 0.00005;
+static int decayFactor = 10;
 
 
 #endif
