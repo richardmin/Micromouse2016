@@ -6,15 +6,16 @@
 
 class Gyro {
 public:
-	float returnAngle();
-	void pollGyro();
-	void reset();
-	Gyro();
+    float returnAngle();
+    void pollGyro();
+    void reset();
+    Gyro();
 
 private:
-	float angle;
+    float angle;
+    Timer gyroTimer;
 
-	void accumulateAngle(float voltage, int milliseconds);
+    void accumulateAngle(float voltage, int milliseconds);
 
 };
 #endif
