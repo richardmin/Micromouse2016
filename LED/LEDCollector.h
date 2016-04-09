@@ -26,6 +26,8 @@ class LEDCollector
         float initialLeftBackLED;
         float initialRightBackLED;
 
+        int currHistPosition;
+        
         void detectWallChanges();
 
 };

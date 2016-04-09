@@ -19,6 +19,6 @@ float measured_right_back;
 // Default amount of time we're polling our IR LEDs
 const int LED_ON_TIME = 1000;
 
-const int LED_HIST_SIZE = 10;
+const int LED_HIST_SIZE = 50;
 
 #endif

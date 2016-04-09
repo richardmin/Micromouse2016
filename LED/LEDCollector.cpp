@@ -3,15 +3,17 @@
 
 LEDCollector::LEDCollector()
 {
-        leftForwardLED = 0;
-        rightForwardLED = 0;
-        leftBackLED = 0;
-        rightBackLED = 0;
+    leftForwardLED = 0;
+    rightForwardLED = 0;
+    leftBackLED = 0;
+    rightBackLED = 0;
 
-        initialLeftForwardLED = 0;
-        initialRightForwardLED = 0;
-        initialLeftBackLED = 0;
-        initialRightBackLED = 0;
+    initialLeftForwardLED = 0;
+    initialRightForwardLED = 0;
+    initialLeftBackLED = 0;
+    initialRightBackLED = 0;
+
+    currHistPosition = 0;
     
     IR_left_forward_pwr = 1;
     for(int i = 0; i < LED_ON_TIME; i++)
@@ -91,12 +93,18 @@ void LEDCollector::pollLEDs(int milliseconds = LED_ON_TIME)
     }
     IR_right_forward_pwr = 0;
 
-    
-    leftForwardLEDHistory[i] = leftForwardLED / milliseconds;
-    leftBackLEDHistory[i] = leftBackLED / milliseconds;
-    rightForwardLEDHistory[i] = rightForwardLED / milliseconds;
-    rightBackLEDHistory[i] = rightBackLED / milliseconds;
 
+    
+    leftForwardLEDHistory[currHistPosition] = leftForwardLED / milliseconds;
+    leftBackLEDHistory[currHistPosition] = leftBackLED / milliseconds;
+    rightForwardLEDHistory[currHistPosition] = rightForwardLED / milliseconds;
+    rightBackLEDHistory[currHistPosition] = rightBackLED / milliseconds;
+
+    currHistPosition++;
+
+    if(currHistPosition >= LED_HIST_SIZE)
+    	currHistPosition = 0;
+    
     detectWallChanges();
 }
 
