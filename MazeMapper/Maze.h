@@ -5,26 +5,27 @@
 #include "MazeMapper/Location.h"
 
 class Maze {
-	public:
-		int calculateDistance(Wall w, int PIDValue);
-		Maze();
+    public:
+        int calculateDistance(Wall w, int PIDValue);
+        Maze();
 
 
-		bool hasLeftWall(Location l);
-		bool hasRightWall(Location l);
-		bool hasFrontWall(Location l);
+        bool hasNorthWall(Location l);
+        bool hasSouthWall(Location l);
+        bool hasEastWall(Location l);
+        bool hasWestWall(Location l);
 
-		
-	private:
-		int walls[MAZE_VERTICAL_WALLS][MAZE_HORIZONTAL_WALLS]; //array of walls N
-		
-		bool forwardLeftWall;
-		bool forwardRightWall;
+        
+    private:
+        int walls[MAZE_VERTICAL_WALLS][MAZE_HORIZONTAL_WALLS]; //array of walls N
+        
+        bool forwardLeftWall;
+        bool forwardRightWall;
 
-		bool closeLeftWall;
-		bool closeRightWall;
+        bool closeLeftWall;
+        bool closeRightWall;
 
-		void updateWalls(Wall w, int distance, Location l);
+        void updateWalls(Wall w, int distance, Location l);
 };
 
 #endif

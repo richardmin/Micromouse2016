@@ -3,51 +3,52 @@
 
 Location::Location() 
 {
-	x = MAZE_WIDTH-1, y = MAZE_HEIGHT-1;
+    x = MAZE_WIDTH-1, y = MAZE_HEIGHT-1;
 }
 
 Location::Location(int X, int Y)
 {
-	x = X, y = Y;
+    x = X, y = Y;
 }
+
 int Location::getX() 
 {
-	return (int) x;
+    return (int) x;
 }
 
 int Location::getY() 
 {
-	return (int) y;
+    return (int) y;
 }
 
 float Location::getExactX() 
 {
-	return x;
+    return x;
 }
 
 float Location::getExactY() 
 {
-	return y;
+    return y;
 }
 
 void Location::update(float amtX, float amtY) 
 {
-	x += amtX;
-	y += amtY;
+    x += amtX;
+    y += amtY;
 }
 
 void Location::updateX(float amt) 
 {
-	x += amt;
+    x += amt;
 }
 
 void Location::updateY(float amt) 
 {
-	y += amt;
+    y += amt;
 }
 
 void Location::set(float X, float Y)
 {
-	x = X;
-	y = Y;
+    x = X;
+    y = Y;
 }

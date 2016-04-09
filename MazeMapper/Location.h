@@ -3,25 +3,25 @@
 #include "MazeMapper/MazeConstants.h"
 
 class Location {
-	public:
-		int getX();
-		int getY();
+    public:
+        int getX();
+        int getY();
 
-		float getExactX();
-		float getExactY();
+        float getExactX();
+        float getExactY();
 
-		void update(float amtX, float amtY);
-		void updateX(float amt);
-		void updateY(float amt);
+        void update(float amtX, float amtY);
+        void updateX(float amt);
+        void updateY(float amt);
 
-		void set(float X, float Y);
+        void set(float X, float Y);
 
-		Location(int X, int Y);
-		Location();
+        Location(int X, int Y);
+        Location();
 
-	private:
-		float x;
-		float y;
+    private:
+        float x;
+        float y;
 };
 
 
