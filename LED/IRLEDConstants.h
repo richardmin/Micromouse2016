@@ -5,7 +5,7 @@
 float angle_front_left;
 float angle_front_right = 360 - angle_front_left;
 float angle_back_right;
-float angle_back_left = 360 - angle_back_right:
+float angle_back_left = 360 - angle_back_right;
 
 //the LED measured variables (should probably not be global)
 float measured_left_forward;
@@ -17,8 +17,8 @@ float measured_right_back;
 
 
 // Default amount of time we're polling our IR LEDs
-int LED_ON_TIME = 1000;
+const int LED_ON_TIME = 1000;
 
-int LED_HIST_SIZE = 10;
+const int LED_HIST_SIZE = 10;
 
 #endif

@@ -7,26 +7,26 @@
 
 class LEDCollector 
 {
-	public:
-		void pollLEDs(int milliseconds);
-		LEDCollector();
-	private:
-		float leftForwardLED = 0;
-		float rightForwardLED = 0;
-		float leftBackLED = 0;
-		float rightBackLED = 0;
+    public:
+        void pollLEDs(int milliseconds);
+        LEDCollector();
+    private:
+        float leftForwardLED;
+        float rightForwardLED;
+        float leftBackLED;
+        float rightBackLED;
 
-		float leftForwardLEDHistory[LED_HIST_SIZE];
-		float leftBackLEDHistory[LED_HIST_SIZE];
-		float rightForwardLEDHistory[LED_HIST_SIZE];
-		float rightBackLEDHistory[LED_HIST_SIZE];
+        float leftForwardLEDHistory[LED_HIST_SIZE];
+        float leftBackLEDHistory[LED_HIST_SIZE];
+        float rightForwardLEDHistory[LED_HIST_SIZE];
+        float rightBackLEDHistory[LED_HIST_SIZE];
 
-		float initialLeftForwardLED = 0;
-		float initialRightForwardLED = 0;
-		float initialLeftBackLED = 0;
-		float initialRightBackLED = 0;
+        float initialLeftForwardLED;
+        float initialRightForwardLED;
+        float initialLeftBackLED;
+        float initialRightBackLED;
 
-		void detectWallChanges();
+        void detectWallChanges();
 
 };
 #endif
