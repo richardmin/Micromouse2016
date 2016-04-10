@@ -8,50 +8,56 @@ pidController::pidController() {
     leftSpeed = 0;
     rightSpeed = 0;
     integrator = 0;
-    turn = 0;
+    turn = false;
 }
 
+// Main loop that runs the PID code and makes the necessary adjustments to 
+// each motors speed
 void pidController::pid()
 {
+    // TODO: right now we don't run PID while turning
+    // Eventually, we want to use the gyro to make sure we
+    // are turning correctly.
     if(turn)
         return;
-    
-    int error = 0;
-    double change = 0.0;
-    
-    error = (LeftEncoder.getPulses()/2 - (RightEncoder.getPulses()-12));
         
-    change = abs(P_controller(error) + D_controller(error) + I_controller(error));
+    // Read the encoder for the left and right motor
+    int left_encoder_pulses = LeftEncoder.getPulses();
+    int right_encoder_pulses = RightEncoder.getPulses();
     
-    if(error > 0)
-    {
-        leftSpeed -= change;
-        rightSpeed += change;
-    }
-    else
-    {
-        leftSpeed += change;
-        rightSpeed -= change;
-    }
+    // Get the time that has passed since the last PID update
+    int dt = timer.read_us();
     
-    if(leftSpeed < 0)
-    {
-        leftSpeed = 0;
-    }
-    else if(leftSpeed > 1)
-    {
-        leftSpeed = 1;
-    }
+    // Calculate the actual speeds we are traveling at
+    // TODO: The angular speed should be based off of the gyro, not the encoders
+    int actual_translational_speed = (left_encoder_pulses + right_encoder_pulses)/dt;
+    int actual_angular_speed = (right_encoder_pulses - left_encoder_pulses)/dt;
     
-    if(rightSpeed < 0)
-    {
-        rightSpeed = 0;
-    }
-    else if(rightSpeed > 1)
-    {
-        rightSpeed = 1;
-    }
+    // Determine the error in the translational speed and the angular speed
+    // TODO: the angular error should also include the gyro and IRs
+    int translational_error = IDEAL_TRANSLATIONAL_SPEED - actual_translational_speed;
+    int angular_error = IDEAL_ANGULAR_SPEED - actual_angular_speed;
     
+    double translational_correction = P_controller(translational_error) +
+                                      I_controller(translational_error) +
+                                      D_controller(translational_error);
+                                      
+    double angular_correction = P_controller(angular_error) +
+                                I_controller(angular_error) +
+                                D_controller(angular_error);
+                                      
+    // Calculate new speeds
+    leftSpeed += (translational_correction - angular_correction);
+    rightSpeed += (translational_correction + angular_correction);
+    
+    // Make sure speeds stay within the proper bounds
+    boundSpeeds();
+    
+    // Set new speeds
+    setLeftPwm(leftSpeed);
+    setRightPwm(rightSpeed);
+     
+    // Reset the sensors for the next iteration
     LeftEncoder.reset();
     RightEncoder.reset();
     timer.reset();
@@ -59,7 +65,7 @@ void pidController::pid()
 
 double pidController::P_controller(int error)
 {
-    return (kp*error);
+    return (KP*error);
 }
 
 double pidController::D_controller(int error)
@@ -71,34 +77,34 @@ double pidController::D_controller(int error)
     timer.reset();
     prevError = error;
     
-    return kd*dError/dt;
+    return KD*dError/dt;
 }
 
 double pidController::I_controller(int error)
 {
     integrator += error;
-    double correction = ki * integrator;
-    integrator /= decayFactor;
+    double correction = KI * integrator;
+    integrator /= DECAY_FACTOR;
     
     return correction;
 }
 
 void pidController::setLeftPwm(double speed) 
 {
-    if(speed == 0)
-    {
-        LMotorForward = 0;
-        LMotorReverse = 0;
-    }
-    if(speed > 0)
-    {
-        LMotorForward = speed;
-        LMotorReverse = STOP;
-    }
     if(speed < 0)
     {
         LMotorForward = STOP;
         LMotorReverse = speed;
+    }
+    else if(speed > 0)
+    {
+        LMotorForward = speed;
+        LMotorReverse = STOP;
+    }
+    else
+    {
+        LMotorForward = STOP;
+        LMotorReverse = STOP;
     }
 }
 
@@ -109,61 +115,50 @@ void pidController::setRightPwm(double speed)
         RMotorForward = speed;
         RMotorReverse = STOP;
     }
-    if(speed < 0)
+    else if(speed < 0)
+    {
+        RMotorForward = STOP;
+        RMotorReverse = speed;
+    }
+    else
     {
         RMotorForward = STOP;
         RMotorReverse = speed;
     }
 }
 
+void pidController::boundSpeeds()
+{
+    if(leftSpeed < -1)
+    {
+        leftSpeed = -1;
+    }
+    else if(leftSpeed > 1)
+    {
+        leftSpeed = 1;
+    }
+    
+    if(rightSpeed < -1)
+    {
+        rightSpeed = -1;
+    }
+    else if(rightSpeed > 1)
+    {
+        rightSpeed = 1;
+    }
+}
+
 void pidController::stop()
 {
-    setLeftPwm(0);
-    setRightPwm(0);
+    // TODO: add stop code
 }
 
 void pidController::turnLeft()
 {
-    for(int i = 0; i < 1000; i++)
-    {
-        setLeftPwm(leftSpeed);
-        setRightPwm(rightSpeed);
-    }
-    
-    turn = true;
-    for(int i = 0; i < 100; i++)
-    {
-        setLeftPwm(0);
-        setRightPwm(0.5);
-    }
-    turn = false;
-    
-    for(int i = 0; i < 1000; i++)
-    {
-        setLeftPwm(leftSpeed);
-        setRightPwm(rightSpeed);
-    }
+    // TODO: add turn code
 }
 
 void pidController::turnRight()
 {
-    for(int i = 0; i < 1000; i++)
-    {
-        setLeftPwm(leftSpeed);
-        setRightPwm(rightSpeed);
-    }
-    
-    turn = true;
-    for(int i = 0; i < 100; i++)
-    {
-        setLeftPwm(0.5);
-        setRightPwm(0);
-    }
-    turn = false;
-    
-    for(int i = 0; i < 100; i++)
-    {
-        setLeftPwm(leftSpeed);
-        setRightPwm(rightSpeed);
-    }
+    // TODO: add turn code
 }

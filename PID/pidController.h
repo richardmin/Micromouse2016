@@ -1,6 +1,5 @@
 #ifndef PID_CONTROLLER_H
 #define PID_CONTROLLER_H
-//http://people.ece.cornell.edu/land/courses/ece4760/FinalProjects/s2004/rd73/476finalpro.htm
 
 #include "mbed.h"
 #include "pidConstants.h"
@@ -27,6 +26,9 @@ class pidController {
         double P_controller(int error);
         double D_controller(int error);
         double I_controller(int error);
+        
+        // Make sure the speeds stay within the proper bounds
+        void boundSpeeds();
 
 
         // Helper functions to drive the wires connected to the motors
@@ -43,7 +45,7 @@ class pidController {
         int prevError;
         
         // Determines if we are currently turning
-        int turn;
+        bool turn;
         
         // Interrupt controller variables
         Ticker interrupt;

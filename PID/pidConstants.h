@@ -1,16 +1,20 @@
 #ifndef PID_CONSTANTS_H
 #define PID_CONSTANTS_H
 
-static double kp = 0.00043;
-
-// Derivative variables
-static double kd = 0.0009;
-
-static int STOP = 0;
+// Proportional variables
+const static double KP = 0.00043;
 
 // Integral variables
-static double ki = 0.00005;
-static int decayFactor = 10;
+const static double KI = 0.00005;
+const static int DECAY_FACTOR = 10;
+
+// Derivative variables
+const static double KD = 0.0009;
+
+// Speed variables
+const static int STOP = 0;
+static int IDEAL_ANGULAR_SPEED = 0; // In rad/s
+static int IDEAL_TRANSLATIONAL_SPEED = 25; // In mm/s
 
 
 #endif
