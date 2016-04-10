@@ -23,9 +23,9 @@ class pidController {
     private:
 
         // Helper functions to determine PID correction
-        double P_controller(int error);
-        double D_controller(int error);
-        double I_controller(int error);
+        double P_controller(double error);
+        double I_controller(double error, double& integrator);
+        double D_controller(double error, double& prevError, int dt);
         
         // Make sure the speeds stay within the proper bounds
         void boundSpeeds();
@@ -41,6 +41,14 @@ class pidController {
         
         // Determines if we are currently turning
         bool turn;
+        
+        // Derivative variables
+        double prevTranslationalError;
+        double prevAngularError;
+        
+        // Integral variables
+        double translationalIntegrator;
+        double angularIntegrator;
         
         // Interrupt controller variables
         Timer timer;

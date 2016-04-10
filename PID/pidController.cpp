@@ -6,6 +6,13 @@
 pidController::pidController() {
     leftSpeed = 0;
     rightSpeed = 0;
+    
+    prevTranslationalError = 0;
+    prevAngularError = 0;
+        
+    translationalIntegrator = 0;
+    angularIntegrator = 0;
+    
     turn = false;
 }
 
@@ -28,21 +35,21 @@ void pidController::pid()
     
     // Calculate the actual speeds we are traveling at
     // TODO: The angular speed should be based off of the gyro, not the encoders
-    int actual_translational_speed = (left_encoder_pulses + right_encoder_pulses)/dt;
-    int actual_angular_speed = (right_encoder_pulses - left_encoder_pulses)/dt;
+    double actual_translational_speed = (left_encoder_pulses + right_encoder_pulses)/2.0/dt;
+    double actual_angular_speed = (right_encoder_pulses - left_encoder_pulses)/2.0/dt;
     
     // Determine the error in the translational speed and the angular speed
     // TODO: the angular error should also include the gyro and IRs
-    int translational_error = IDEAL_TRANSLATIONAL_SPEED - actual_translational_speed;
-    int angular_error = IDEAL_ANGULAR_SPEED - actual_angular_speed;
+    double translational_error = IDEAL_TRANSLATIONAL_SPEED - actual_translational_speed;
+    double angular_error = IDEAL_ANGULAR_SPEED - actual_angular_speed;
     
     double translational_correction = P_controller(translational_error) +
-                                      I_controller(translational_error) +
-                                      D_controller(translational_error);
+                                      I_controller(translational_error, translationalIntegrator) +
+                                      D_controller(translational_error, prevTranslationalError, dt);
                                       
     double angular_correction = P_controller(angular_error) +
-                                I_controller(angular_error) +
-                                D_controller(angular_error);
+                                I_controller(angular_error, angularIntegrator) +
+                                D_controller(angular_error, prevAngularError, dt);
                                       
     // Calculate new speeds
     leftSpeed += (translational_correction - angular_correction);
@@ -61,36 +68,27 @@ void pidController::pid()
     timer.reset();
 }
 
-double pidController::P_controller(int error)
+double pidController::P_controller(double error)
 {
-    // TODO: this function
-    return -1;
-    //return (KP*error);
+    return (KP*error);
 }
 
-double pidController::D_controller(int error)
-{   
-    // TODO: this function
-    return -1;
-    /*double dError = error - prevError;
-        
-    int dt = timer.read_us();
-    
-    timer.reset();
-    prevError = error;
-    
-    return KD*dError/dt;*/
-}
-
-double pidController::I_controller(int error)
+double pidController::I_controller(double error, double& integrator)
 {
-    //  TODO: this function
-    return -1;
-    /*integrator += error;
+    integrator += error;
     double correction = KI * integrator;
     integrator /= DECAY_FACTOR;
     
-    return correction;*/
+    return correction;
+}
+
+double pidController::D_controller(double error, double& prevError, int dt)
+{   
+    double dError = error - prevError;
+        
+    prevError = error;
+    
+    return KD*dError/dt;
 }
 
 void pidController::setLeftPwm(double speed) 
