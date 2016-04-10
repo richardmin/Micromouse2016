@@ -35,20 +35,14 @@ class pidController {
         void setRightPwm(double speed); 
         void setLeftPwm(double speed);
 
-
         // Variables that hold the relative speed of each motor
         double leftSpeed;
         double rightSpeed;
-        
-        // Variables to assist with PID calculations
-        int integrator;
-        int prevError;
         
         // Determines if we are currently turning
         bool turn;
         
         // Interrupt controller variables
-        Ticker interrupt;
         Timer timer;
 };
 

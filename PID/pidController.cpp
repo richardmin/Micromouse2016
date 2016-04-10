@@ -4,10 +4,8 @@
 
 
 pidController::pidController() {
-    prevError = 0;
     leftSpeed = 0;
     rightSpeed = 0;
-    integrator = 0;
     turn = false;
 }
 
@@ -65,28 +63,34 @@ void pidController::pid()
 
 double pidController::P_controller(int error)
 {
-    return (KP*error);
+    // TODO: this function
+    return -1;
+    //return (KP*error);
 }
 
 double pidController::D_controller(int error)
 {   
-    double dError = error - prevError;
+    // TODO: this function
+    return -1;
+    /*double dError = error - prevError;
         
     int dt = timer.read_us();
     
     timer.reset();
     prevError = error;
     
-    return KD*dError/dt;
+    return KD*dError/dt;*/
 }
 
 double pidController::I_controller(int error)
 {
-    integrator += error;
+    //  TODO: this function
+    return -1;
+    /*integrator += error;
     double correction = KI * integrator;
     integrator /= DECAY_FACTOR;
     
-    return correction;
+    return correction;*/
 }
 
 void pidController::setLeftPwm(double speed) 
