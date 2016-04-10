@@ -1,21 +1,37 @@
-#include "PINS/pinouts.h"
-#include "Gyro/GyroConstants.h"
 #ifndef GYRO_H
 #define GYRO_H
 
+#include "mbed.h"
+#include "Gyro/GyroConstants.h"
+
+
 
 class Gyro {
-public:
-    float returnAngle();
-    void pollGyro();
-    void reset();
-    Gyro();
-
-private:
-    float angle;
-    Timer gyroTimer;
-
-    void accumulateAngle(float voltage, int milliseconds);
-
+    public:
+        
+        Gyro();
+        void pollGyro();
+        void reset();
+        
+        double getAngularSpeed();
+        double getAngle();
+        double getTotalAngle();
+        double getDistance();
+        double getTotaDistance();
+    
+    private:
+    
+        void setAngle();
+        void setDistance();
+        
+        double angularSpeed;
+        double angle;
+        double totalAngle;
+        double distance;
+        double totalDistance;
+        int dt;
+        Timer timer;
+    
+        AnalogIn gyro;
 };
 #endif
