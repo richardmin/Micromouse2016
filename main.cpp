@@ -10,11 +10,8 @@
 
 
 int main()  
-{    
-    Location curLoc = Location(0, 0);
-    pidController pid = pidController();
-    
-    Gyro gyro();
+{        
+    Gyro gyro;
     
     // Controller for IR receivers
     AnalogIn IR_receiver1(IR_LEFT_BACK);
@@ -39,8 +36,47 @@ int main()
     // Controllers for left motor
     PwmOut LMotorForward(L_MOTOR_FORWARD);
     PwmOut LMotorReverse(L_MOTOR_REVERSE);
+    
+    // PID controller
+    pidController pid = pidController(&gyro,
+                                      &LeftEncoder, &RightEncoder,
+                                      &LMotorForward, &LMotorReverse,
+                                      &RMotorForward, &RMotorReverse);
+                                      
+    // Interrupt controller
+    Ticker interrupt;
+    
+    Location curLoc = Location(0, 0);
+    
+    //Intialize final things
+    pid.start();
+    interrupt.attach_us(&pid, &pidController::pid, 1000);
+    
+    while(1)
+    {
+        wait(2.0);
+        pid.turnLeft();
+        wait(2.0);
+        pid.turnLeft();
+        wait(2.0);
+        pid.turnLeft();
+        wait(2.0);
+        pid.turnLeft();
+        wait(2.0);
+        
+        
+        wait(2.0);
+        pid.turnRight();
+        wait(2.0);
+        pid.turnRight();
+        wait(2.0);
+        pid.turnRight();
+        wait(2.0);
+        pid.turnRight();
+        wait(2.0);
+    }
 
-    while(1); //back up straight, until we give go ahead to PIDs
+    /*while(1); //back up straight, until we give go ahead to PIDs
 
     //this way the LED's get initialized properly
     MazeRunner runner = MazeRunner();
@@ -59,4 +95,5 @@ int main()
     }
 
     //attach an interrrupt for a button to reset run (location reset to 0)
+    */
 }

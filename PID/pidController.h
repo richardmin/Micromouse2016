@@ -3,12 +3,17 @@
 
 #include "mbed.h"
 #include "pidConstants.h"
+#include "Gyro/Gyro.h"
+#include "AVEncoder/AVEncoder.h"
 
 class pidController {
     public: 
     
         // Constructor
-        pidController();
+        pidController(Gyro* g, 
+                      AVEncoder* left, AVEncoder* right,
+                      PwmOut* LForward, PwmOut* LReverse,
+                      PwmOut* RReverse, PwmOut* RForward);
     
         // Main function in charge of calculating new motor speeds
         void pid();
@@ -20,6 +25,9 @@ class pidController {
         void turnRight();
         void turnLeft();
         
+        // Starts the PID Timer
+        void start();
+        
     private:
 
         // Helper functions to determine PID correction
@@ -30,17 +38,27 @@ class pidController {
         // Make sure the speeds stay within the proper bounds
         void boundSpeeds();
 
-
         // Helper functions to drive the wires connected to the motors
         void setRightPwm(double speed); 
         void setLeftPwm(double speed);
+        
+        // Sensor variables
+        Gyro* gyro;
+        AVEncoder* LeftEncoder;
+        AVEncoder* RightEncoder;
+        
+        // Motor Controllers
+        PwmOut* LMotorForward;
+        PwmOut* LMotorReverse;
+        PwmOut* RMotorForward;
+        PwmOut* RMotorReverse;
 
         // Variables that hold the relative speed of each motor
         double leftSpeed;
         double rightSpeed;
         
         // Determines if we are currently turning
-        bool turn;
+        bool turning;
         
         // Derivative variables
         double prevTranslationalError;

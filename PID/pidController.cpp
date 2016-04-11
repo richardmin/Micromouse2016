@@ -1,42 +1,55 @@
 #include "pidController.h"
-#include "../PINS/pinouts.h"
-#include <cmath>
+#include "AVEncoder/AVEncoder.h"
 
-
-pidController::pidController() {
-    leftSpeed = 0;
-    rightSpeed = 0;
+pidController::pidController(Gyro* g, 
+                             AVEncoder* left, AVEncoder* right, 
+                             PwmOut* LForward, PwmOut* LReverse, 
+                             PwmOut* RReverse, PwmOut* RForward)
+: gyro(g),
+  LeftEncoder(left), RightEncoder(right),
+  LMotorForward(LForward), LMotorReverse(LReverse),
+  RMotorForward(RForward), RMotorReverse(RReverse)
+{
+    leftSpeed = 0.5;
+    rightSpeed = 0.5;
     
     prevTranslationalError = 0;
     prevAngularError = 0;
         
     translationalIntegrator = 0;
     angularIntegrator = 0;
+        
+    turning = false;
     
-    turn = false;
+    timer.start();
+}
+
+void pidController::start()
+{
+    timer.start();
+    timer.reset();
 }
 
 // Main loop that runs the PID code and makes the necessary adjustments to 
 // each motors speed
 void pidController::pid()
-{
-    // TODO: right now we don't run PID while turning
-    // Eventually, we want to use the gyro to make sure we
-    // are turning correctly.
-    if(turn)
+{        
+    if(turning)
         return;
         
-    // Read the encoder for the left and right motor
-    int left_encoder_pulses = LeftEncoder.getPulses();
-    int right_encoder_pulses = RightEncoder.getPulses();
-    
     // Get the time that has passed since the last PID update
     int dt = timer.read_us();
+
+    // Read the encoder for the left and right motor
+    int left_encoder_pulses = LeftEncoder->getPulses();
+    int right_encoder_pulses = RightEncoder->getPulses();
+    
+    // Poll the gyro for new values
+    gyro->pollGyro(dt);
     
     // Calculate the actual speeds we are traveling at
-    // TODO: The angular speed should be based off of the gyro, not the encoders
     double actual_translational_speed = (left_encoder_pulses + right_encoder_pulses)/2.0/dt;
-    double actual_angular_speed = (right_encoder_pulses - left_encoder_pulses)/2.0/dt;
+    double actual_angular_speed = gyro->getDistance()/dt;
     
     // Determine the error in the translational speed and the angular speed
     // TODO: the angular error should also include the gyro and IRs
@@ -63,8 +76,8 @@ void pidController::pid()
     setRightPwm(rightSpeed);
      
     // Reset the sensors for the next iteration
-    LeftEncoder.reset();
-    RightEncoder.reset();
+    LeftEncoder->reset();
+    RightEncoder->reset();
     timer.reset();
 }
 
@@ -95,18 +108,18 @@ void pidController::setLeftPwm(double speed)
 {
     if(speed < 0)
     {
-        LMotorForward = STOP;
-        LMotorReverse = speed;
+        *LMotorForward = STOP;
+        *LMotorReverse = speed;
     }
     else if(speed > 0)
     {
-        LMotorForward = speed;
-        LMotorReverse = STOP;
+        *LMotorForward = speed;
+        *LMotorReverse = STOP;
     }
     else
     {
-        LMotorForward = STOP;
-        LMotorReverse = STOP;
+        *LMotorForward = STOP;
+        *LMotorReverse = STOP;
     }
 }
 
@@ -114,18 +127,18 @@ void pidController::setRightPwm(double speed)
 {
     if(speed > 0)
     {
-        RMotorForward = speed;
-        RMotorReverse = STOP;
+        *RMotorForward = speed;
+        *RMotorReverse = STOP;
     }
     else if(speed < 0)
     {
-        RMotorForward = STOP;
-        RMotorReverse = speed;
+        *RMotorForward = STOP;
+        *RMotorReverse = speed;
     }
     else
     {
-        RMotorForward = STOP;
-        RMotorReverse = speed;
+        *RMotorForward = STOP;
+        *RMotorReverse = speed;
     }
 }
 
@@ -152,15 +165,54 @@ void pidController::boundSpeeds()
 
 void pidController::stop()
 {
-    // TODO: add stop code
+    setLeftPwm(STOP);
+    setRightPwm(STOP);
 }
 
 void pidController::turnLeft()
 {
-    // TODO: add turn code
+    // TODO: turning should be curved
+    turning = true;
+    stop();
+    gyro->reset();
+    setRightPwm(0.25);
+    
+    while(gyro->getTotalAngle() < 90)
+    {
+        ;
+    }
+    
+    stop();
+    
+    LeftEncoder->reset();
+    RightEncoder->reset();
+    gyro->reset();
+    
+    setLeftPwm(leftSpeed);
+    setRightPwm(rightSpeed);
+    turning = false;
 }
 
 void pidController::turnRight()
 {
-    // TODO: add turn code
+    // TODO: turning should be curved
+    turning = true;
+    stop();
+    gyro->reset();
+    setLeftPwm(0.25);
+    
+    while(gyro->getTotalAngle() > -90)
+    {
+        ;
+    }
+    
+    stop();
+    
+    LeftEncoder->reset();
+    RightEncoder->reset();
+    gyro->reset();
+    
+    setLeftPwm(leftSpeed);
+    setRightPwm(rightSpeed);
+    turning = false;
 }
