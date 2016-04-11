@@ -34,18 +34,18 @@ void pidController::start()
 // each motors speed
 void pidController::pid()
 {        
-    if(turning)
-        return;
-        
     // Get the time that has passed since the last PID update
     int dt = timer.read_us();
+    
+    // Poll the gyro for new values
+    gyro->pollGyro(dt);
+
+    if(turning)
+        return;
 
     // Read the encoder for the left and right motor
     int left_encoder_pulses = LeftEncoder->getPulses();
     int right_encoder_pulses = RightEncoder->getPulses();
-    
-    // Poll the gyro for new values
-    gyro->pollGyro(dt);
     
     // Calculate the actual speeds we are traveling at
     double actual_translational_speed = (left_encoder_pulses + right_encoder_pulses)/2.0/dt;
