@@ -1,5 +1,6 @@
 #include "pidController.h"
 #include "AVEncoder/AVEncoder.h"
+#include "Gyro/GyroConstants.h"
 
 pidController::pidController(Gyro* g, 
                              AVEncoder* left, AVEncoder* right, 
@@ -47,9 +48,17 @@ void pidController::pid()
     int left_encoder_pulses = LeftEncoder->getPulses();
     int right_encoder_pulses = RightEncoder->getPulses();
     
-    // Calculate the actual speeds we are traveling at
-    double actual_translational_speed = (left_encoder_pulses + right_encoder_pulses)/2.0/dt;
-    double actual_angular_speed = gyro->getDistance()/dt;
+    // Calculate actual translational speed
+    double actual_translational_speed = (left_encoder_pulses + right_encoder_pulses)/2.0; // pulses
+    actual_translational_speed /= dt; // pulses/us
+    actual_translational_speed *= 10E6; // pulses/s
+    actual_translational_speed /= 360; // rotations/s
+    actual_translational_speed  *= WHEEL_CIRCUMFERENCE; // mm/s
+    
+    // Calculate actual angular speed
+    double actual_angular_speed = gyro->getDistance(); // mm
+    actual_angular_speed /= dt; // mm/us
+    actual_angular_speed *= 10E6; // mm/s
     
     // Determine the error in the translational speed and the angular speed
     // TODO: the angular error should also include the gyro and IRs

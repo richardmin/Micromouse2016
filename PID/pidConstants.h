@@ -14,7 +14,7 @@ const static double KD = 0.0009;
 // Speed variables
 const static int STOP = 0;
 static int IDEAL_ANGULAR_SPEED = 0; // In mm/s
-static int IDEAL_TRANSLATIONAL_SPEED = 25; // In mm/s
+static int IDEAL_TRANSLATIONAL_SPEED = 400; // In mm/s
 
 
 #endif
