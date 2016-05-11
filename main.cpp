@@ -10,9 +10,7 @@
 
 
 int main()  
-{        
-    Gyro gyro;
-    
+{           
     // Controller for IR receivers
     AnalogIn IR_receiver1(IR_LEFT_BACK);
     AnalogIn IR_receiver2(IR_LEFT_FRONT);
@@ -38,19 +36,18 @@ int main()
     PwmOut LMotorReverse(L_MOTOR_REVERSE);
     
     // PID controller
-    pidController pid = pidController(&gyro,
-                                      &LeftEncoder, &RightEncoder,
+    pidController pid = pidController(&LeftEncoder, &RightEncoder,
                                       &LMotorForward, &LMotorReverse,
                                       &RMotorForward, &RMotorReverse);
                                       
     // Interrupt controller
     Ticker interrupt;
     
-    Location curLoc = Location(0, 0);
+    //Location curLoc = Location(0, 0);
     
     //Intialize final things
     pid.start();
-    interrupt.attach_us(&pid, &pidController::pid, 1000);
+    //interrupt.attach_us(&pid, &pidController::pid, 1000);
     
     while(1)
     {
@@ -81,11 +78,6 @@ int main()
     //this way the LED's get initialized properly
     MazeRunner runner = MazeRunner();
     MazeMapper mapper = MazeMapper();
-    
-    //prepare pid
-    interrupt.attach_us(&pid.pid(), 1000);
-    timer.start();
-    gyroTimer.start();
     
     bool hasMapped = false;
 

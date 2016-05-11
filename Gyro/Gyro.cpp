@@ -14,9 +14,9 @@ Gyro::Gyro()
     timer.start();
 }
 
-void Gyro::pollGyro()
+void Gyro::pollGyro(int dt)
 {
-    dt = timer.read_us();
+    this->dt = dt;
     
     angularSpeed = gyro.read();
     angularSpeed *= 3.4;

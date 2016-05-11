@@ -3,6 +3,18 @@
 
 LEDCollector::LEDCollector()
 {
+    // Controller for IR receivers
+    AnalogIn IR_left_back(IR_LEFT_BACK);
+    AnalogIn IR_left_front(IR_LEFT_FRONT);
+    AnalogIn IR_right_front(IR_RIGHT_FRONT);
+    AnalogIn IR_right_back(IR_RIGHT_BACK);
+    
+    // Controller for IR emitters
+    DigitalOut IR_left_back_pwr(IR_LEFT_BACK_PWR);
+    DigitalOut IR_left_front_pwr(IR_LEFT_FRONT_PWR);
+    DigitalOut IR_right_front_pwr(IR_RIGHT_FRONT_PWR);
+    DigitalOut IR_right_back_pwr(IR_RIGHT_BACK_PWR);
+    
     leftForwardLED = 0;
     rightForwardLED = 0;
     leftBackLED = 0;
@@ -15,19 +27,19 @@ LEDCollector::LEDCollector()
 
     currHistPosition = 0;
     
-    IR_left_forward_pwr = 1;
+    IR_left_front_pwr = 1;
     for(int i = 0; i < LED_ON_TIME; i++)
     {
         initialLeftForwardLED += IR_left_front.read();
     }
-    IR_left_forward_pwr = 0;
+    IR_left_front_pwr = 0;
     
-    IR_right_forward_pwr = 1;
+    IR_right_front_pwr = 1;
     for(int i = 0; i < LED_ON_TIME; i++)
     {
         initialRightForwardLED += IR_right_front.read();
     }
-    IR_right_forward_pwr = 0;
+    IR_right_front_pwr = 0;
 
     IR_left_back_pwr = 1;
     for(int i = 0; i < LED_ON_TIME; i++)
@@ -36,12 +48,12 @@ LEDCollector::LEDCollector()
     }
     IR_left_back_pwr = 0;
 
-    IR_right_forward_pwr = 1;
+    IR_right_front_pwr = 1;
     for(int i = 0; i < LED_ON_TIME; i++)
     {
         initialRightBackLED += IR_right_back.read();
     }
-    IR_right_forward_pwr = 0;
+    IR_right_front_pwr = 0;
 
     initialRightBackLED /= LED_ON_TIME;
     initialRightForwardLED /= LED_ON_TIME;
@@ -60,24 +72,36 @@ LEDCollector::LEDCollector()
 
 void LEDCollector::pollLEDs(int milliseconds = LED_ON_TIME)
 {
+    // Controller for IR receivers
+    AnalogIn IR_left_back(IR_LEFT_BACK);
+    AnalogIn IR_left_front(IR_LEFT_FRONT);
+    AnalogIn IR_right_front(IR_RIGHT_FRONT);
+    AnalogIn IR_right_back(IR_RIGHT_BACK);
+    
+    // Controller for IR emitters
+    DigitalOut IR_left_back_pwr(IR_LEFT_BACK_PWR);
+    DigitalOut IR_left_front_pwr(IR_LEFT_FRONT_PWR);
+    DigitalOut IR_right_front_pwr(IR_RIGHT_FRONT_PWR);
+    DigitalOut IR_right_back_pwr(IR_RIGHT_BACK_PWR);
+    
     leftForwardLED = 0;
     rightForwardLED = 0;
     leftBackLED = 0;
     rightBackLED = 0;
 
-    IR_left_forward_pwr = 1;
+    IR_left_front_pwr = 1;
     for(int i = 0; i < milliseconds; i++)
     {
         leftForwardLED += IR_left_front.read();
     }
-    IR_left_forward_pwr = 0;
+    IR_left_front_pwr = 0;
     
-    IR_right_forward_pwr = 1;
+    IR_right_front_pwr = 1;
     for(int i = 0; i < milliseconds; i++)
     {
         rightForwardLED += IR_right_front.read();
     }
-    IR_right_forward_pwr = 0;
+    IR_right_front_pwr = 0;
 
     IR_left_back_pwr = 1;
     for(int i = 0; i < milliseconds; i++)
@@ -86,12 +110,12 @@ void LEDCollector::pollLEDs(int milliseconds = LED_ON_TIME)
     }
     IR_left_back_pwr = 0;
 
-    IR_right_forward_pwr = 1;
+    IR_right_front_pwr = 1;
     for(int i = 0; i < milliseconds; i++)
     {
         rightBackLED += IR_right_back.read();
     }
-    IR_right_forward_pwr = 0;
+    IR_right_front_pwr = 0;
 
 
     
@@ -103,7 +127,7 @@ void LEDCollector::pollLEDs(int milliseconds = LED_ON_TIME)
     currHistPosition++;
 
     if(currHistPosition >= LED_HIST_SIZE)
-    	currHistPosition = 0;
+        currHistPosition = 0;
     
     detectWallChanges();
 }

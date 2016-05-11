@@ -2,17 +2,15 @@
 #include "AVEncoder/AVEncoder.h"
 #include "Gyro/GyroConstants.h"
 
-pidController::pidController(Gyro* g, 
-                             AVEncoder* left, AVEncoder* right, 
+pidController::pidController(AVEncoder* left, AVEncoder* right, 
                              PwmOut* LForward, PwmOut* LReverse, 
                              PwmOut* RReverse, PwmOut* RForward)
-: gyro(g),
-  LeftEncoder(left), RightEncoder(right),
+: LeftEncoder(left), RightEncoder(right),
   LMotorForward(LForward), LMotorReverse(LReverse),
   RMotorForward(RForward), RMotorReverse(RReverse)
 {
-    leftSpeed = 0.5;
-    rightSpeed = 0.5;
+    leftSpeed = 500/1885;
+    rightSpeed = 500/1885;
     
     prevTranslationalError = 0;
     prevAngularError = 0;
@@ -21,68 +19,72 @@ pidController::pidController(Gyro* g,
     angularIntegrator = 0;
         
     turning = false;
-    
-    timer.start();
+    running = false;
 }
 
 void pidController::start()
 {
     timer.start();
     timer.reset();
+    running = true;
 }
 
 // Main loop that runs the PID code and makes the necessary adjustments to 
 // each motors speed
 void pidController::pid()
 {        
-    // Get the time that has passed since the last PID update
-    int dt = timer.read_us();
-    
-    // Poll the gyro for new values
-    gyro->pollGyro(dt);
+    if(!running)
+    {
+        LeftEncoder->reset();
+        RightEncoder->reset();
+        timer.reset();
+        return;
+    }
 
     if(turning)
         return;
+        
+    // Get the time that has passed since the last PID update
+    int dt = timer.read_us();
 
     // Read the encoder for the left and right motor
     int left_encoder_pulses = LeftEncoder->getPulses();
     int right_encoder_pulses = RightEncoder->getPulses();
     
     // Calculate actual translational speed
-    double actual_translational_speed = (left_encoder_pulses + right_encoder_pulses)/2.0; // pulses
+    double actual_translational_speed = (left_encoder_pulses + right_encoder_pulses); // pulses
     actual_translational_speed /= dt; // pulses/us
-    actual_translational_speed *= 10E6; // pulses/s
-    actual_translational_speed /= 360; // rotations/s
-    actual_translational_speed  *= WHEEL_CIRCUMFERENCE; // mm/s
+    actual_translational_speed *= 1000000;
+    actual_translational_speed /= 360; // rotations/s      
+    actual_translational_speed *= WHEEL_CIRCUMFERENCE; // mm/s
+    actual_translational_speed /= 2; // To account for the fact that we added at the beginning
     
-    // Calculate actual angular speed
-    double actual_angular_speed = gyro->getDistance(); // mm
-    actual_angular_speed /= dt; // mm/us
-    actual_angular_speed *= 10E6; // mm/s
+        // Calculate actual angular speed
+    double actual_angular_speed = (left_encoder_pulses - right_encoder_pulses); // pulses
+    actual_angular_speed /= dt; // pulses/us
+    actual_angular_speed *= 1000000;
+    actual_angular_speed /= 360; // rotations/s
+    actual_angular_speed  *= WHEEL_CIRCUMFERENCE; // mm/s
     
     // Determine the error in the translational speed and the angular speed
     // TODO: the angular error should also include the gyro and IRs
     double translational_error = IDEAL_TRANSLATIONAL_SPEED - actual_translational_speed;
     double angular_error = IDEAL_ANGULAR_SPEED - actual_angular_speed;
     
-    double translational_correction = P_controller(translational_error) +
-                                      I_controller(translational_error, translationalIntegrator) +
-                                      D_controller(translational_error, prevTranslationalError, dt);
+    double translational_correction = P_controller_translational(translational_error) +
+                                      //I_controller_translational(translational_error, translationalIntegrator, dt) +
+                                      D_controller_translational(translational_error, prevTranslationalError, dt);
                                       
-    double angular_correction = P_controller(angular_error) +
-                                I_controller(angular_error, angularIntegrator) +
-                                D_controller(angular_error, prevAngularError, dt);
+    double angular_correction = P_controller_angular(angular_error) + 
+                                //I_controller_angular(angular_error, angularIntegrator, dt);
+                                D_controller_angular(angular_error, prevAngularError, dt);
                                       
     // Calculate new speeds
-    leftSpeed += (translational_correction - angular_correction);
-    rightSpeed += (translational_correction + angular_correction);
+    leftSpeed += (translational_correction + angular_correction);
+    rightSpeed += (translational_correction - angular_correction);
     
     // Make sure speeds stay within the proper bounds
     boundSpeeds();
-    
-    // Set new speeds
-    setLeftPwm(leftSpeed);
-    setRightPwm(rightSpeed);
      
     // Reset the sensors for the next iteration
     LeftEncoder->reset();
@@ -90,27 +92,53 @@ void pidController::pid()
     timer.reset();
 }
 
-double pidController::P_controller(double error)
+double pidController::P_controller_translational(double error)
 {
-    return (KP*error);
+    return (KP_translational*error);
 }
 
-double pidController::I_controller(double error, double& integrator)
+double pidController::I_controller_translational(double error, unsigned int& integrator, int dt)
 {
-    integrator += error;
-    double correction = KI * integrator;
-    integrator /= DECAY_FACTOR;
+    integrator += (error*1000*dt);
+    if(integrator > 0.01/KI_translational)
+            integrator /= DECAY_FACTOR;
     
+    double correction = KI_translational * integrator;
+        
     return correction;
 }
 
-double pidController::D_controller(double error, double& prevError, int dt)
+double pidController::D_controller_translational(double error, double& prevError, int dt)
 {   
     double dError = error - prevError;
         
     prevError = error;
     
-    return KD*dError/dt;
+    return KD_translational*dError/(1000*dt);
+}
+
+double pidController::P_controller_angular(double error)
+{
+    return (KP_angular*error);
+}
+
+double pidController::I_controller_angular(double error, unsigned int& integrator, int dt)
+{
+    integrator += (error*1000*dt);
+        integrator /= DECAY_FACTOR;
+    
+    double correction = KI_angular * integrator;
+        
+    return correction;
+}
+
+double pidController::D_controller_angular(double error, double& prevError, int dt)
+{   
+    double dError = error - prevError;
+        
+    prevError = error;
+    
+    return KD_angular*dError/(1000*dt);
 }
 
 void pidController::setLeftPwm(double speed) 
@@ -183,19 +211,12 @@ void pidController::turnLeft()
     // TODO: turning should be curved
     turning = true;
     stop();
-    gyro->reset();
     setRightPwm(0.25);
-    
-    while(gyro->getTotalAngle() < 90)
-    {
-        ;
-    }
     
     stop();
     
     LeftEncoder->reset();
     RightEncoder->reset();
-    gyro->reset();
     
     setLeftPwm(leftSpeed);
     setRightPwm(rightSpeed);
@@ -207,19 +228,12 @@ void pidController::turnRight()
     // TODO: turning should be curved
     turning = true;
     stop();
-    gyro->reset();
     setLeftPwm(0.25);
-    
-    while(gyro->getTotalAngle() > -90)
-    {
-        ;
-    }
     
     stop();
     
     LeftEncoder->reset();
     RightEncoder->reset();
-    gyro->reset();
     
     setLeftPwm(leftSpeed);
     setRightPwm(rightSpeed);

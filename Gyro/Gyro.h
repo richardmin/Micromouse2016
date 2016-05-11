@@ -4,13 +4,11 @@
 #include "mbed.h"
 #include "Gyro/GyroConstants.h"
 
-
-
 class Gyro {
     public:
         
         Gyro();
-        void pollGyro();
+        void pollGyro(int dt);
         void reset();
         
         double getAngularSpeed();
