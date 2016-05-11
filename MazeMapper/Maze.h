@@ -1,31 +1,70 @@
-#ifndef MAZE_H
-#define MAZE_H
+#ifndef Maze_h
+#define Maze_h
 
-#include "MazeMapper/MazeConstants.h"
-#include "MazeMapper/Location.h"
+#include <string>
+
+#include "MazeMapper/BitVector256.h"
+#include "MazeMapper/MazeDefinitions.h"
+#include "MazeMapper/Dir.h"
+#include "MazeMapper/PathFinder.h"
 
 class Maze {
-    public:
-        int calculateDistance(Wall w, int PIDValue);
-        Maze();
+protected:
+    BitVector256 wallNS;
+    BitVector256 wallEW;
+    Dir heading;
+    PathFinder *pathFinder;
+    unsigned mouseX;
+    unsigned mouseY;
 
+    bool isOpen(unsigned x, unsigned y, Dir d) const;
+    void setOpen(unsigned x, unsigned y, Dir d);
 
-        bool hasNorthWall(Location l);
-        bool hasSouthWall(Location l);
-        bool hasEastWall(Location l);
-        bool hasWestWall(Location l);
+    void moveForward();
+    void moveBackward();
 
-        
-    private:
-        int walls[MAZE_VERTICAL_WALLS][MAZE_HORIZONTAL_WALLS]; //array of walls N
-        
-        bool forwardLeftWall;
-        bool forwardRightWall;
+    inline void turnClockwise() {
+        heading = clockwise(heading);
+    }
 
-        bool closeLeftWall;
-        bool closeRightWall;
+    inline void turnCounterClockwise() {
+        heading = counterClockwise(heading);
+    }
 
-        void updateWalls(Wall w, int distance, Location l);
+    inline void turnAround() {
+        heading = opposite(heading);
+    }
+
+public:
+    Maze(MazeDefinitions::MazeEncodingName name, PathFinder *pathFinder);
+
+    inline bool wallInFront() const {
+        return !isOpen(mouseX, mouseY, heading);
+    }
+
+    inline bool wallOnLeft() const {
+        return !isOpen(mouseX, mouseY, counterClockwise(heading));
+    }
+
+    inline bool wallOnRight() const {
+        return !isOpen(mouseX, mouseY, clockwise(heading));
+    }
+
+    /**
+     * Start running the mouse through the maze.
+     * Terminates when the PathFinder's nextMovement method returns MouseMovement::Finish.
+     */
+    void start();
+
+    /**
+     * This function draws the maze using ASCII characters.
+     *
+     * Queries the underlying PathFinder for additional maze info
+     * and incorporates it in the maze rendering.
+     * @param infoLen: specifies the max characters of info to be drawn. If no info is supplied, blank spaces will be inserted.
+     * @return string of rendered maze
+     */
+    std::string draw(const size_t infoLen = 4) const;
 };
 
 #endif
