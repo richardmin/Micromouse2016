@@ -51,26 +51,8 @@ int main()
     
     while(1)
     {
-        wait(2.0);
-        pid.turnLeft();
-        wait(2.0);
-        pid.turnLeft();
-        wait(2.0);
-        pid.turnLeft();
-        wait(2.0);
-        pid.turnLeft();
-        wait(2.0);
-        
-        
-        wait(2.0);
-        pid.turnRight();
-        wait(2.0);
-        pid.turnRight();
-        wait(2.0);
-        pid.turnRight();
-        wait(2.0);
-        pid.turnRight();
-        wait(2.0);
+        LMotorForward = 0.5;
+        RMotorForward = 0.5;
     }
 
     /*while(1); //back up straight, until we give go ahead to PIDs

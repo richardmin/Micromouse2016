@@ -9,8 +9,8 @@ pidController::pidController(AVEncoder* left, AVEncoder* right,
   LMotorForward(LForward), LMotorReverse(LReverse),
   RMotorForward(RForward), RMotorReverse(RReverse)
 {
-    leftSpeed = 500/1885;
-    rightSpeed = 500/1885;
+    leftSpeed = 500/1885.0;
+    rightSpeed = 500/1885.0;
     
     prevTranslationalError = 0;
     prevAngularError = 0;
@@ -26,6 +26,8 @@ void pidController::start()
 {
     timer.start();
     timer.reset();
+    LeftEncoder->reset();
+    RightEncoder->reset();
     running = true;
 }
 
@@ -67,7 +69,6 @@ void pidController::pid()
     actual_angular_speed  *= WHEEL_CIRCUMFERENCE; // mm/s
     
     // Determine the error in the translational speed and the angular speed
-    // TODO: the angular error should also include the gyro and IRs
     double translational_error = IDEAL_TRANSLATIONAL_SPEED - actual_translational_speed;
     double angular_error = IDEAL_ANGULAR_SPEED - actual_angular_speed;
     
@@ -76,7 +77,7 @@ void pidController::pid()
                                       D_controller_translational(translational_error, prevTranslationalError, dt);
                                       
     double angular_correction = P_controller_angular(angular_error) + 
-                                //I_controller_angular(angular_error, angularIntegrator, dt);
+                                //I_controller_angular(angular_error, angularIntegrator, dt) + 
                                 D_controller_angular(angular_error, prevAngularError, dt);
                                       
     // Calculate new speeds
@@ -85,6 +86,9 @@ void pidController::pid()
     
     // Make sure speeds stay within the proper bounds
     boundSpeeds();
+    
+    setLeftPwm(leftSpeed);
+    setRightPwm(rightSpeed);
      
     // Reset the sensors for the next iteration
     LeftEncoder->reset();
@@ -99,10 +103,10 @@ double pidController::P_controller_translational(double error)
 
 double pidController::I_controller_translational(double error, unsigned int& integrator, int dt)
 {
-    integrator += (error*1000*dt);
+    integrator += (error*dt)/1000000;
     if(integrator > 0.01/KI_translational)
             integrator /= DECAY_FACTOR;
-    
+                
     double correction = KI_translational * integrator;
         
     return correction;
@@ -124,7 +128,7 @@ double pidController::P_controller_angular(double error)
 
 double pidController::I_controller_angular(double error, unsigned int& integrator, int dt)
 {
-    integrator += (error*1000*dt);
+    integrator += (error*dt)/1000000;
         integrator /= DECAY_FACTOR;
     
     double correction = KI_angular * integrator;
@@ -146,7 +150,7 @@ void pidController::setLeftPwm(double speed)
     if(speed < 0)
     {
         *LMotorForward = STOP;
-        *LMotorReverse = speed;
+        *LMotorReverse = -speed;
     }
     else if(speed > 0)
     {
@@ -170,7 +174,7 @@ void pidController::setRightPwm(double speed)
     else if(speed < 0)
     {
         *RMotorForward = STOP;
-        *RMotorReverse = speed;
+        *RMotorReverse = -speed;
     }
     else
     {
