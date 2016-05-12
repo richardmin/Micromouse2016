@@ -4,8 +4,8 @@
 #include "../AVEncoder/AVEncoder.h"
 
 // Controllers for right motor
-#define R_MOTOR_FORWARD PB_6
-#define R_MOTOR_REVERSE PA_7
+#define R_MOTOR_FORWARD PA_7
+#define R_MOTOR_REVERSE PB_6
 
 // Controllers for left motor
 #define L_MOTOR_FORWARD PB_8
