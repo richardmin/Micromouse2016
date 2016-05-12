@@ -2,9 +2,9 @@
 #include <stack>
 #include <cstdlib>  // atoi
 
-#include "MazeMapper/Maze.h"
-#include "MazeMapper/MazeDefinitions.h"
-#include "MazeMapper/PathFinder.h"
+#include "Maze.h"
+#include "MazeDefinitions.h"
+#include "PathFinder.h"
 
 
 
@@ -27,12 +27,11 @@ struct coord{
 class FloodFillFinder : public PathFinder {
 public:
     // Constructor
-    FloodFillFinder(): heading(NORTH){
+    FloodFillFinder(bool shouldPause = false) : pause(shouldPause) {
         coords.clearAll();
         horizontal.clearAll();
         vertical.clearAll();
-        infinity = ~0;
-        
+        heading = NORTH;
         
         for(int i = MazeDefinitions::MAZE_LEN/2; i < MazeDefinitions::MAZE_LEN; i++){
             for(int j = 0; j < MazeDefinitions::MAZE_LEN/2; j++)
@@ -162,9 +161,12 @@ public:
     MouseMovement nextMovement(unsigned x, unsigned y, const Maze& maze)
     {
         
-        std::cout << "Hit enter to continue..." << std::endl;
-        std::cin.ignore(10000, '\n');
-        std::cin.clear();
+        if(pause)
+        {
+            std::cout << "Hit enter to continue..." << std::endl;
+            std::cin.ignore(10000, '\n');
+            std::cin.clear();
+        }
         std::cout << maze.draw(5) << std::endl << std::endl;
         
         coord block;
@@ -178,37 +180,51 @@ public:
             return Finish;
         
         
-        if(heading == NORTH){
-            if(front)
-                horizontal.set(y+1,x);
-            if(left)
-                vertical.set(y,x);
-            if(right)
-                vertical.set(y,x+1);
-        }
-        else if(heading == EAST){
-            if(front)
-                vertical.set(y,x+1);
-            if(left)
-                horizontal.set(y+1,x);
-            if(right)
-                horizontal.set(y,x);
-        }
-        else if(heading == SOUTH){
-            if(front)
-                horizontal.set(y,x);
-            if(left)
-                vertical.set(y,x+1);
-            if(right)
-                vertical.set(y,x);
-        }
-        else{
-            if(front)
-                vertical.set(y,x);
-            if(left)
-                horizontal.set(y,x);
-            if(right)
-                horizontal.set(y+1,x);
+        switch(heading)
+        {
+            case NORTH:
+            {
+                if(front)
+                    horizontal.set(y+1,x);
+                if(left)
+                    vertical.set(y,x);
+                if(right)
+                    vertical.set(y,x+1);
+                break;
+            }
+            case EAST:
+            {
+                if(front)
+                    vertical.set(y,x+1);
+                if(left)
+                    horizontal.set(y+1,x);
+                if(right)
+                    horizontal.set(y,x);
+                break;
+            }
+            case WEST:
+            {
+                
+                if(front)
+                    vertical.set(y,x);
+                if(left)
+                    horizontal.set(y,x);
+                if(right)
+                    horizontal.set(y+1,x);
+                break;
+            }
+            case SOUTH:
+            {
+                if(front)
+                    horizontal.set(y,x);
+                if(left)
+                    vertical.set(y,x+1);
+                if(right)
+                    vertical.set(y,x);
+                break;
+            }
+            case INVALID:
+                std::cout << "error" << std::endl;
         }
         
         
@@ -282,23 +298,7 @@ public:
                     }
                 }
                 break;
-            case SOUTH:
-                shortest = Distance[x][y-1];
-                if(!left){
-                    if(shortest > Distance[x+1][y]){
-                        shortest = Distance[x+1][y];
-                        heading = counterClockwise(heading);
-                        dir = TurnCounterClockwise;
-                    }
-                }
-                if(!right){
-                    if(shortest > Distance[x-1][y]){
-                        shortest = Distance[x-1][y];
-                        heading = clockwise(heading);
-                        dir = TurnClockwise;
-                    }
-                }
-                break;
+                
             case WEST:
                 shortest = Distance[x-1][y];
                 if(!left){
@@ -311,6 +311,23 @@ public:
                 if(!right){
                     if(shortest > Distance[x][y+1]){
                         shortest = Distance[x][y+1];
+                        heading = clockwise(heading);
+                        dir = TurnClockwise;
+                    }
+                }
+                break;
+            case SOUTH:
+                shortest = Distance[x][y-1];
+                if(!left){
+                    if(shortest > Distance[x+1][y]){
+                        shortest = Distance[x+1][y];
+                        heading = counterClockwise(heading);
+                        dir = TurnCounterClockwise;
+                    }
+                }
+                if(!right){
+                    if(shortest > Distance[x-1][y]){
+                        shortest = Distance[x-1][y];
                         heading = clockwise(heading);
                         dir = TurnClockwise;
                     }
@@ -334,13 +351,17 @@ protected:
         (x == midpoint     && y == midpoint - 1) ||
         (x == midpoint - 1 && y == midpoint - 1);
     }
+    
+    const bool pause;
 private:
     BitVector256 coords;
     BitVector256 vertical;
     BitVector256 horizontal;
     Dir heading;
     unsigned int Distance[MazeDefinitions::MAZE_LEN][MazeDefinitions::MAZE_LEN];
-    unsigned int infinity;
+    unsigned int infinity = ~0;
+    
+    
 };
 
 /**
@@ -467,8 +488,9 @@ int main(int argc, char * argv[]) {
             return -1;
         }
     }
-    FloodFillFinder testRun;
-    Maze maze(mazeName, &testRun);
+    FloodFillFinder floodFill(pause);
+    LeftWallFollower leftWallFollower(pause);
+    Maze maze(mazeName, &floodFill);
     std::cout << maze.draw(5) << std::endl << std::endl;
     
     maze.start();

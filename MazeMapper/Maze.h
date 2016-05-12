@@ -3,10 +3,10 @@
 
 #include <string>
 
-#include "MazeMapper/BitVector256.h"
-#include "MazeMapper/MazeDefinitions.h"
-#include "MazeMapper/Dir.h"
-#include "MazeMapper/PathFinder.h"
+#include "BitVector256.h"
+#include "MazeDefinitions.h"
+#include "Dir.h"
+#include "PathFinder.h"
 
 class Maze {
 protected:

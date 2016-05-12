@@ -1,5 +1,5 @@
 #include <iostream>
-#include "MazeMapper/Maze.h"
+#include "Maze.h"
 
 #define ARRAY_SIZE(a) (sizeof(a)/sizeof(*a))
 
@@ -131,9 +131,6 @@ void Maze::start() {
                     break;
                 case TurnAround:
                     turnAround();
-                    break;
-                case Wait:
-                    // Do nothing, try again
                     break;
                 case Finish:
                 default:

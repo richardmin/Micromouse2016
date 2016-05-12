@@ -13,7 +13,7 @@ MouseMovement FloodFillFollower::nextMovement(unsigned x, unsigned y, const Maze
 {
 	if(pause) 
 	{
-		std::cout << "Hit enter to continue..." << std::endl;
+		// std::cout << "Hit enter to continue..." << std::endl;
 		std::cin.ignore(10000, '\n');
 		std::cin.clear();
 	}

@@ -17,7 +17,7 @@ class FloodFillFollower : public PathFinder {
 				for(int j = 0; j < MazeDefinitions::MAZE_LEN; j++)
 				{
 					explored[i][j] = false;
-					distance[i][k] = -1;
+					distance[i][j] = -1;
 				}
 			}
 		}
