@@ -468,7 +468,6 @@ int main(int argc, char * argv[]) {
         }
     }
     FloodFillFinder testRun;
-    LeftWallFollower leftWallFollower(pause);
     Maze maze(mazeName, &testRun);
     std::cout << maze.draw(5) << std::endl << std::endl;
     

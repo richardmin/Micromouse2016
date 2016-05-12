@@ -10,8 +10,7 @@ class pidController {
     public: 
     
         // Constructor
-        pidController(Gyro* g, 
-                      AVEncoder* left, AVEncoder* right,
+        pidController(AVEncoder* left, AVEncoder* right,
                       PwmOut* LForward, PwmOut* LReverse,
                       PwmOut* RReverse, PwmOut* RForward);
     
@@ -31,9 +30,12 @@ class pidController {
     private:
 
         // Helper functions to determine PID correction
-        double P_controller(double error);
-        double I_controller(double error, double& integrator);
-        double D_controller(double error, double& prevError, int dt);
+        double P_controller_translational(double error);
+        double I_controller_translational(double error, unsigned int& integrator, int dt);
+        double D_controller_translational(double error, double& prevError, int dt);
+        double P_controller_angular(double error);
+        double I_controller_angular(double error, unsigned int& integrator, int dt);
+        double D_controller_angular(double error, double& prevError, int dt);
         
         // Make sure the speeds stay within the proper bounds
         void boundSpeeds();
@@ -43,7 +45,6 @@ class pidController {
         void setLeftPwm(double speed);
         
         // Sensor variables
-        Gyro* gyro;
         AVEncoder* LeftEncoder;
         AVEncoder* RightEncoder;
         
@@ -65,11 +66,13 @@ class pidController {
         double prevAngularError;
         
         // Integral variables
-        double translationalIntegrator;
-        double angularIntegrator;
+        unsigned int translationalIntegrator;
+        unsigned int angularIntegrator;
         
         // Interrupt controller variables
         Timer timer;
+        
+        bool running;
 };
 
 #endif
