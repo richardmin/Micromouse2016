@@ -163,11 +163,9 @@ public:
         
         if(pause)
         {
-            std::cout << "Hit enter to continue..." << std::endl;
             std::cin.ignore(10000, '\n');
             std::cin.clear();
         }
-        std::cout << maze.draw(5) << std::endl << std::endl;
         
         coord block;
         block.x = x;
@@ -224,7 +222,7 @@ public:
                 break;
             }
             case INVALID:
-                std::cout << "error" << std::endl;
+            //cry
         }
         
         

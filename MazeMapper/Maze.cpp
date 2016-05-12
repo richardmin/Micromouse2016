@@ -137,7 +137,7 @@ void Maze::start() {
                     return;
             }
         } catch (std::string str) {
-            std::cerr << str << std::endl;
+            // std::cerr << str << std::endl;
         }
     }
 }
