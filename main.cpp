@@ -9,8 +9,13 @@
 #include "Gyro/Gyro.h"
 
 
+DigitalOut myled(LED1);
+DigitalIn mybutton(USER_BUTTON);
+
+
 int main()  
 {           
+printf("Random print line\r\n");
     // Controller for IR receivers
     AnalogIn IR_receiver1(IR_LEFT_BACK);
     AnalogIn IR_receiver2(IR_LEFT_FRONT);
@@ -43,16 +48,24 @@ int main()
     // Interrupt controller
     Ticker interrupt;
     
-    //Location curLoc = Location(0, 0);
     
-    //Intialize final things
-    pid.start();
+    //Location curLoc = Location(0, 0);
     //interrupt.attach_us(&pid, &pidController::pid, 1000);
     
+    printf("PLEASE");
+    while(mybutton)
+    {
+        printf("Waiting");
+        ;
+    }
+    //Intialize final things
+    pid.start();
+    printf("Random print line\r\n");
     while(1)
     {
-        LMotorForward = 0.5;
-        RMotorForward = 0.5;
+        printf("Random print line\r\n");
+        pid.pid();
+        wait(0.05);
     }
 
     /*while(1); //back up straight, until we give go ahead to PIDs
