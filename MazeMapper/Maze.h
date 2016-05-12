@@ -56,15 +56,6 @@ public:
      */
     void start();
 
-    /**
-     * This function draws the maze using ASCII characters.
-     *
-     * Queries the underlying PathFinder for additional maze info
-     * and incorporates it in the maze rendering.
-     * @param infoLen: specifies the max characters of info to be drawn. If no info is supplied, blank spaces will be inserted.
-     * @return string of rendered maze
-     */
-    std::string draw(const size_t infoLen = 4) const;
 };
 
 #endif
