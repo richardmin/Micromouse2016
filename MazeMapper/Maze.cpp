@@ -40,7 +40,7 @@ Maze::Maze(MazeDefinitions::MazeEncodingName name, PathFinder *pathFinder)
 //                 setOpen(col, row, EAST);
 //             }
 //         }
-// }
+    // }
 }
 
 bool Maze::isOpen(unsigned x, unsigned y, Dir d) const {
@@ -157,15 +157,15 @@ void Maze::start() {
 
 
 bool Maze::wallInFront() const {
-
+    //READ IRS (we could technically check memory but this is safer)
 }
 
 bool Maze::wallOnLeft() const {
-
+    //READ IRS (we could technically check memory but this is safer)
 }
 
 
 bool Maze::wallOnRight() const {
-
+    //READ IRS (we could technically check memory but this is safer)
 }
 

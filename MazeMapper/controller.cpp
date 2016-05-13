@@ -165,10 +165,13 @@ public:
         coord block;
         block.x = x;
         block.y = y;
+
+        //todo: CREATE IR (so we can tell if there's walls in front or not)
         bool front = maze.wallInFront();
         bool left = maze.wallOnLeft();
         bool right = maze.wallOnRight();
         
+        //todo: reverse the goal and reset the values. 
         if(isAtCenter(x, y))
             return Finish;
         
