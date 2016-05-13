@@ -5,41 +5,42 @@
 
 Maze::Maze(MazeDefinitions::MazeEncodingName name, PathFinder *pathFinder)
 : heading(NORTH), pathFinder(pathFinder), mouseX(0), mouseY(0) {
-    
+    // name = MazeDefinitions::MAZE_CAMM_2012;
+
 
     wallNS.clearAll();
     wallEW.clearAll();
 
     // Encoding stores wall/no wall in WSEN in the least significant bits
     // Data is stored in column major order
-    const unsigned westMask  = 1 << 3;
-    const unsigned southMask = 1 << 2;
-    const unsigned eastMask  = 1 << 1;
-    const unsigned northMask = 1 << 0;
+//     const unsigned westMask  = 1 << 3;
+//     const unsigned southMask = 1 << 2;
+//     const unsigned eastMask  = 1 << 1;
+//     const unsigned northMask = 1 << 0;
 
-    for(unsigned col = 0; col < MazeDefinitions::MAZE_LEN; col++) {
-        for(unsigned row = 0; row < MazeDefinitions::MAZE_LEN; row++) {
+//     for(unsigned col = 0; col < MazeDefinitions::MAZE_LEN; col++) {
+//         for(unsigned row = 0; row < MazeDefinitions::MAZE_LEN; row++) {
 
-            //TODO: READ IRS AND SEE WHAT IS OPEN HERE. 
-            // const unsigned char cell = MazeDefinitions::mazes[mazeIndex][col][row];
+//            
 
-            if((cell & northMask) == 0 && row != MazeDefinitions::MAZE_LEN) {
-                setOpen(col, row, NORTH);
-            }
 
-            if((cell & southMask) == 0 && row != 0) {
-                setOpen(col, row, SOUTH);
-            }
+//             if((cell & northMask) == 0 && row != MazeDefinitions::MAZE_LEN) {
+//                 setOpen(col, row, NORTH);
+//             }
 
-            if((cell & westMask) == 0 && col != 0) {
-                setOpen(col, row, WEST);
-            }
+//             if((cell & southMask) == 0 && row != 0) {
+//                 setOpen(col, row, SOUTH);
+//             }
 
-            if((cell & eastMask) == 0 && col != MazeDefinitions::MAZE_LEN) {
-                setOpen(col, row, EAST);
-            }
-        }
-    }
+//             if((cell & westMask) == 0 && col != 0) {
+//                 setOpen(col, row, WEST);
+//             }
+
+//             if((cell & eastMask) == 0 && col != MazeDefinitions::MAZE_LEN) {
+//                 setOpen(col, row, EAST);
+//             }
+//         }
+// }
 }
 
 bool Maze::isOpen(unsigned x, unsigned y, Dir d) const {
@@ -153,3 +154,18 @@ void Maze::start() {
         }
     }
 }
+
+
+bool Maze::wallInFront() const {
+
+}
+
+bool Maze::wallOnLeft() const {
+
+}
+
+
+bool Maze::wallOnRight() const {
+
+}
+

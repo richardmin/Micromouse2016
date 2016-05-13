@@ -3,6 +3,7 @@
 
 #include <stdint.h> // uint16_t
 #include <cstring> // memset
+#include <string>
 
 class BitVector256 {
 public:

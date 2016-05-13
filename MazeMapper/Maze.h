@@ -32,17 +32,11 @@ protected:
 public:
     Maze(MazeDefinitions::MazeEncodingName name, PathFinder *pathFinder);
 
-    inline bool wallInFront() const {
-        return !isOpen(mouseX, mouseY, heading);
-    }
+    bool wallInFront() const;
 
-    inline bool wallOnLeft() const {
-        return !isOpen(mouseX, mouseY, counterClockwise(heading));
-    }
+    bool wallOnLeft() const;
 
-    inline bool wallOnRight() const {
-        return !isOpen(mouseX, mouseY, clockwise(heading));
-    }
+    bool wallOnRight() const;
 
     /**
      * Start running the mouse through the maze.
