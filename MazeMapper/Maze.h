@@ -25,17 +25,9 @@ protected:
     void moveForward();
     void moveBackward();
 
-    inline void turnClockwise() {
-        heading = clockwise(heading);
-    }
-
-    inline void turnCounterClockwise() {
-        heading = counterClockwise(heading);
-    }
-
-    inline void turnAround() {
-        heading = opposite(heading);
-    }
+    void turnClockwise();
+    void turnCounterClockwise();
+    void turnAround();
 
 public:
     Maze(MazeDefinitions::MazeEncodingName name, PathFinder *pathFinder);

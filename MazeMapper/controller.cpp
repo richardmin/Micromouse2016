@@ -161,11 +161,6 @@ public:
     MouseMovement nextMovement(unsigned x, unsigned y, const Maze& maze)
     {
         
-        if(pause)
-        {
-            std::cin.ignore(10000, '\n');
-            std::cin.clear();
-        }
         
         coord block;
         block.x = x;
@@ -362,7 +357,7 @@ private:
     
 };
 
-int begin_controller() {
+void begin_controller() {
     // MazeDefinitions::MazeEncodingName mazeName = MazeDefinitions::MAZE_CAMM_2012;
     bool pause = true;
     

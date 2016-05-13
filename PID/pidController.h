@@ -3,7 +3,6 @@
 
 #include "mbed.h"
 #include "pidConstants.h"
-#include "Gyro/Gyro.h"
 #include "AVEncoder/AVEncoder.h"
 
 class pidController {

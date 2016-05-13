@@ -2,7 +2,6 @@
 #include "AVEncoder.h"
 #include "PINS/pinouts.h"
 #include "MazeMapper/Maze.h"
-#include "MazeMapper/Location.h"
 #include "LED/LEDCollector.h"
 #include "PID/pidController.h"
 #include "PID/pidConstants.h"
@@ -51,36 +50,25 @@ printf("Random print line\r\n");
     
     //Location curLoc = Location(0, 0);
     //interrupt.attach_us(&pid, &pidController::pid, 1000);
+    //interrupt.detach(); //this detaches pid. We need to do this when the 
     
-    printf("PLEASE");
-    while(mybutton)
-    {
-        printf("Waiting");
-        ;
-    }
+    while(mybutton);
+
     //Intialize final things
     pid.start();
-    printf("Random print line\r\n");
+
     while(1)
     {
-        printf("Random print line\r\n");
         pid.pid();
         wait(0.05);
     }
 
-    /*while(1); //back up straight, until we give go ahead to PIDs
 
-    //this way the LED's get initialized properly
-    MazeRunner runner = MazeRunner();
-    MazeMapper mapper = MazeMapper();
-    
-    bool hasMapped = false;
+    // Straighten out the back of the mouse.
+    // setLeftPwm(-1);
+    // setRightPwm(-1);
+    // 
 
-    while(!hasMapped) //do mapping mode until we decide otherwise
-    {
-        
-    }
-
-    //attach an interrrupt for a button to reset run (location reset to 0)
-    */
+    // begin_controller(); //global function declared in controller.cpp
+    //
 }
