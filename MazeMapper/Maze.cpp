@@ -76,9 +76,9 @@ void Maze::setOpen(unsigned x, unsigned y, Dir d) {
 }
 
 void Maze::moveForward() {
-    if(! isOpen(mouseX, mouseY, heading)) {
-        throw "Mouse crashed!";
-    }
+    // if(! isOpen(mouseX, mouseY, heading)) {
+    //     throw "Mouse crashed!";
+    // }
     //TODO: Actually move the mouse forward here.
 
     switch(heading) {
@@ -128,7 +128,7 @@ void Maze::start() {
     }
 
     while(Finish != (nextMovement = pathFinder->nextMovement(mouseX, mouseY, *this))) {
-        try {
+        // try {
             switch(nextMovement) {
                 case MoveForward:
                 moveForward();
@@ -148,24 +148,31 @@ void Maze::start() {
                 case Finish:
                 default:
                 return;
-            }
-        } catch (std::string str) {
-            // std::cerr << str << std::endl;
-        }
+             }
+        // } catch (std::string str) {
+        //     // std::cerr << str << std::endl;
+        // }
     }
 }
 
-
-bool Maze::wallInFront() const {
+bool Maze::wallInFront() const
+{
     //READ IRS (we could technically check memory but this is safer)
+    return false;
 }
 
-bool Maze::wallOnLeft() const {
+bool Maze::wallOnLeft() const
+{
     //READ IRS (we could technically check memory but this is safer)
+    return false;
 }
 
 
-bool Maze::wallOnRight() const {
+bool Maze::wallOnRight() const
+{
     //READ IRS (we could technically check memory but this is safer)
+    return false;
+
 }
+
 

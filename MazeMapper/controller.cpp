@@ -221,6 +221,8 @@ public:
             }
             case INVALID:
             //cry
+            {
+            }
         }
         
         
@@ -355,21 +357,21 @@ private:
     BitVector256 horizontal;
     Dir heading;
     unsigned int Distance[MazeDefinitions::MAZE_LEN][MazeDefinitions::MAZE_LEN];
-    unsigned int infinity = ~0;
+    const unsigned int infinity = ~0;
     
     
 };
 
 void begin_controller() {
-    // MazeDefinitions::MazeEncodingName mazeName = MazeDefinitions::MAZE_CAMM_2012;
+    MazeDefinitions::MazeEncodingName mazeName = MazeDefinitions::MAZE_CAMM_2012;
     bool pause = true;
     
     FloodFillFinder floodFill(pause);
-    LeftWallFollower leftWallFollower(pause);
     Maze maze(mazeName, &floodFill);
     
     maze.start();
 }
+
 
 
 
