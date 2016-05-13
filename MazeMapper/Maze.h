@@ -17,6 +17,8 @@ protected:
     unsigned mouseX;
     unsigned mouseY;
 
+    MouseMovement nextMovement;
+
     bool isOpen(unsigned x, unsigned y, Dir d) const;
     void setOpen(unsigned x, unsigned y, Dir d);
 

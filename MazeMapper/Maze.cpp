@@ -108,8 +108,6 @@ void Maze::moveBackward() {
 }
 
 void Maze::start() {
-    MouseMovement nextMovement;
-
     if(!pathFinder) {
         return;
     }
