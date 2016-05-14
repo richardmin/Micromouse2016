@@ -19,9 +19,11 @@ pidController::pidController(AVEncoder* left, AVEncoder* right,
     
     prevTranslationalError = 0;
     prevAngularError = 0;
+    prevIRError = 0;
         
     translationalIntegrator = 0;
     angularIntegrator = 0;
+    IRIntegrator = 0;
         
     turning = false;
     running = false;
@@ -148,6 +150,30 @@ double pidController::D_controller_angular(double error, double& prevError, int 
     prevError = error;
     
     return KD_angular*dError/(1000*dt);
+}
+
+double P_controller_IR(double error)
+{
+    return (KP_IR*error);
+}
+
+double I_controller_IR(double error, unsigned int& integrator, int dt)
+{
+    integrator += (error*dt)/1000000;
+    integrator /= DECAY_FACTOR;
+    
+    double correction = KI_IR * integrator;
+        
+    return correction;
+}
+
+double D_controller_IR(double error, double& prevError, int dt)
+{
+    double dError = error - prevError;
+        
+    prevError = error;
+    
+    return KD_IR*dError/(1000*dt);
 }
 
 void pidController::setLeftPwm(double speed) 

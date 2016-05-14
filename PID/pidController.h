@@ -38,6 +38,9 @@ class pidController {
         double P_controller_angular(double error);
         double I_controller_angular(double error, unsigned int& integrator, int dt);
         double D_controller_angular(double error, double& prevError, int dt);
+        double P_controller_IR(double error);
+        double I_controller_IR(double error, unsigned int& integrator, int dt);
+        double D_controller_IR(double error, double& prevError, int dt);
         
         // Make sure the speeds stay within the proper bounds
         void boundSpeeds();
@@ -78,10 +81,12 @@ class pidController {
         // Derivative variables
         double prevTranslationalError;
         double prevAngularError;
+        double prevIRError;
         
         // Integral variables
         unsigned int translationalIntegrator;
         unsigned int angularIntegrator;
+        unsigned int IRIntegrator
         
         // Interrupt controller variables
         Timer timer;
