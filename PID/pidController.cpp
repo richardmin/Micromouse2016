@@ -15,8 +15,8 @@ pidController::pidController(AVEncoder* left, AVEncoder* right,
   IR_in_left_back(in_left_back), IR_in_left_front(in_left_front), IR_in_right_front(in_right_front), IR_in_right_back(in_right_back),
   IR_out_left_back(out_left_back), IR_out_left_front(out_left_front), IR_out_right_front(out_right_front), IR_out_right_back(out_right_back)
 {
-    leftSpeed = 0;
-    rightSpeed = 0;
+    leftSpeed = DEFAULT_FORWARD_SPEED;
+    rightSpeed = DEFAULT_FORWARD_SPEED;
     
     prevTranslationalError = 0;
     prevAngularError = 0;
@@ -398,16 +398,16 @@ void pidController::moveForward()
 {
     int front_left_LED = 0, front_right_LED = 0, back_left_LED = 0, back_right_LED = 0;
 
-    leftSpeed = DEFAULT_FORWARD_SPEED;
-    rightSpeed = DEFAULT_FORWARD_SPEED;
-
+    setLeftPwm(DEFAULT_FORWARD_SPEED);
+    setRightPwm(DEFAULT_FORWARD_SPEED);
+    
     *IR_out_left_front = 1;
     for(int i = 0; i < 10; i++)
     {
         front_left_LED += 1000*IR_in_left_front->read();
     }
     front_left_LED /= 10;
-    *IR_out_left_back = 0;
+    *IR_out_left_front = 0;
    
     *IR_out_right_front = 1;
     for(int i = 0; i < 10; i++)
@@ -415,7 +415,7 @@ void pidController::moveForward()
         front_right_LED += 1000*IR_in_right_front->read();
     }
     front_right_LED /= 10;
-    *IR_out_right_back = 0;
+    *IR_out_right_front = 0;
 
     *IR_out_left_back = 1;
     for(int i = 0; i < 10; i++)
@@ -435,11 +435,11 @@ void pidController::moveForward()
 
     turning = false;
 
-    if(back_left_LED < 70)
-        printf("NO LEFT WALL\r\n");
-
-    if(back_right_LED < 350)
-        printf("NO RIGHT WALL\r\n");
+//    if(back_left_LED > 70)
+//        printf("LEFT WALL %d\r\n", back_left_LED);
+//
+//    if(back_right_LED > 350)
+//        printf("RIGHT WALL\r\n");
     if(front_left_LED > IR_FRONT_WALL || front_right_LED > IR_FRONT_WALL)
     {
         printf("TURNING LEFT\r\n");
