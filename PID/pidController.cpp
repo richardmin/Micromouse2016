@@ -29,7 +29,7 @@ pidController::pidController(AVEncoder* left, AVEncoder* right,
     left_IR_base = 0;
     for(int i = 0; i < 100; i++)
     {
-        left_IR_base += IR_in_left_back->read();
+        left_IR_base += 1000*IR_in_left_back->read();
     }
     left_IR_base /= 100;
     *IR_out_left_back = 0;
@@ -38,11 +38,11 @@ pidController::pidController(AVEncoder* left, AVEncoder* right,
     right_IR_base = 0;
     for(int i = 0; i < 100; i++)
     {
-        right_IR_base += IR_in_right_back->read();
+        right_IR_base += 1000*IR_in_right_back->read();
     }
     right_IR_base /= 100;
     *IR_out_right_back = 0;
-        
+            
     turning = false;
     running = false;
 }
@@ -78,14 +78,19 @@ void pidController::pid()
     int left_encoder_pulses = LeftEncoder->getPulses();
     int right_encoder_pulses = RightEncoder->getPulses();
     
-    // Read left IR
+    // Read IR values
     *IR_out_left_back = 1;
-    int left_IR = IR_in_left_back->read();
-    *IR_out_left_back = 0;
-    
-    // Read right IR
     *IR_out_right_back = 1;
-    int right_IR = IR_in_right_back->read();
+    float left_IR = 0;
+    float right_IR = 0;
+    for(int i = 0; i < 10; i++)
+    {
+        left_IR += 1000*IR_in_left_back->read();
+        right_IR += 1000*IR_in_right_back->read();
+    }
+    left_IR /= 10;
+    right_IR /= 10;
+    *IR_out_left_back = 0;
     *IR_out_right_back = 0;
     
     // Calculate actual translational speed
@@ -103,18 +108,32 @@ void pidController::pid()
     actual_angular_speed /= 360; // rotations/s
     actual_angular_speed  *= WHEEL_CIRCUMFERENCE; // mm/s
     
-    // Determine the error in the translational speed and the angular speed
+    // Determine the error in everything
     double translational_error = IDEAL_TRANSLATIONAL_SPEED - actual_translational_speed;
     double angular_error = IDEAL_ANGULAR_SPEED - actual_angular_speed;
-    int left_IR_error = left_IR;
-    int right_IR_error = right_IR;
+    int left_IR_error = left_IR - left_IR_base;
+    int right_IR_error = right_IR - right_IR_base;
     
-    double IR_correction = 0;
-    if(abs(IR_error) > 40)
+    double IR_correction;
+    if(left_IR > 70)
     {
-        IR_correction = P_controller_translational(IR_error) +
-                        //I_controller_translational(translational_error, translationalIntegrator, dt) +
-                        D_controller_translational(IR_error, prevIRError, dt);
+         //Calculate IR error based on left IR
+         IR_correction = P_controller_IR(left_IR_error) + 
+                              //I_controller_IR(left_IR_error, IRIntegrator, dt) + 
+                              D_controller_IR(left_IR_error, prevIRError, dt);
+    }
+    if(right_IR > 350)
+    {
+         //Calculate IR error based on right IR
+         IR_correction = P_controller_IR(right_IR_error) + 
+                              //I_controller_IR(right_IR_error, IRIntegrator, dt) + 
+                              D_controller_IR(right_IR_error, prevIRError, dt);
+    }
+    else
+    {
+         IR_correction = P_controller_IR(0) + 
+                              //I_controller_IR(0, IRIntegrator, dt) + 
+                              D_controller_IR(0, prevIRError, dt);
     }
     
     double translational_correction = P_controller_translational(translational_error) +
@@ -190,12 +209,12 @@ double pidController::D_controller_angular(double error, double& prevError, int 
     return KD_angular*dError/(1000*dt);
 }
 
-double P_controller_IR(double error)
+double pidController::P_controller_IR(double error)
 {
     return (KP_IR*error);
 }
 
-double I_controller_IR(double error, unsigned int& integrator, int dt)
+double pidController::I_controller_IR(double error, unsigned int& integrator, int dt)
 {
     integrator += (error*dt)/1000000;
     integrator /= DECAY_FACTOR;
@@ -205,7 +224,7 @@ double I_controller_IR(double error, unsigned int& integrator, int dt)
     return correction;
 }
 
-double D_controller_IR(double error, double& prevError, int dt)
+double pidController::D_controller_IR(double error, double& prevError, int dt)
 {
     double dError = error - prevError;
         
@@ -292,7 +311,6 @@ void pidController::turnLeft()
     int i = 0;
     while(LeftEncoder->getPulses() != 0 &&  RightEncoder->getPulses() != 0)
     {
-        //printf("Looped: %d\r\n", i);
         LeftEncoder->reset();
         RightEncoder->reset();
         
@@ -305,8 +323,6 @@ void pidController::turnLeft()
     
     while(LeftEncoder->getPulses() < LEFT_TURN_ENCODER_COUNT ||  RightEncoder->getPulses() < LEFT_TURN_ENCODER_COUNT)
     {
-        //printf(" Left Encoder: %d Right Encoder: %d \r\n", LeftEncoder->getPulses(), RightEncoder->getPulses());
-        
         if(LeftEncoder->getPulses() >= LEFT_TURN_ENCODER_COUNT)
         {
             setLeftPwm(0.0);    
