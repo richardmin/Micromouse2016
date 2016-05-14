@@ -15,8 +15,7 @@ pidController::pidController(AVEncoder* left, AVEncoder* right,
   IR_in_left_back(in_left_back), IR_in_left_front(in_left_front), IR_in_right_front(in_right_front), IR_in_right_back(in_right_back),
   IR_out_left_back(out_left_back), IR_out_left_front(out_left_front), IR_out_right_front(out_right_front), IR_out_right_back(out_right_back)
 {
-    leftSpeed = DEFAULT_FORWARD_SPEED;
-    rightSpeed = DEFAULT_FORWARD_SPEED;
+    leftSpeed = DEFAULT_LEFT_SPEED;
     
     prevTranslationalError = 0;
     prevAngularError = 0;
@@ -112,30 +111,31 @@ void pidController::pid()
     // Determine the error in everything
     double translational_error = IDEAL_TRANSLATIONAL_SPEED - actual_translational_speed;
     double angular_error = IDEAL_ANGULAR_SPEED - actual_angular_speed;
-    int left_IR_error = left_IR - left_IR_base;
-    int right_IR_error = right_IR - right_IR_base;
+    double left_IR_error = left_IR - left_IR_base;
+    double right_IR_error = right_IR - right_IR_base;
     
     double IR_correction;
-    if(left_IR > 70)
+    double IR_correction_left = 0;
+    double IR_correction_right = 0;
+    if(left_IR > LEFT_IR_WALL)
     {
-         //Calculate IR error based on left IR
-         IR_correction = P_controller_IR(left_IR_error) + 
-                              //I_controller_IR(left_IR_error, IRIntegrator, dt) + 
-                              D_controller_IR(left_IR_error, prevIRError, dt);
+        //printf("LEFT WALL\t");
+        //Calculate IR error based on left IR
+        IR_correction_left = P_controller_IR(left_IR_error) + 
+                     //I_controller_IR(left_IR_error, IRIntegrator, dt) + 
+                     D_controller_IR(left_IR_error, prevIRError, dt);
     }
-    if(right_IR > 350)
+    if(right_IR > RIGHT_IR_WALL)
     {
-         //Calculate IR error based on right IR
-         IR_correction = P_controller_IR(right_IR_error) + 
-                              //I_controller_IR(right_IR_error, IRIntegrator, dt) + 
-                              D_controller_IR(right_IR_error, prevIRError, dt);
+        //printf("RIGHT WALL\t");
+        //Calculate IR error based on right IR
+        IR_correction_right = P_controller_IR(right_IR_error) + 
+                     //I_controller_IR(right_IR_error, IRIntegrator, dt) + 
+                     D_controller_IR(right_IR_error, prevIRError, dt);
+        IR_correction_right = -IR_correction_right;
     }
-    else
-    {
-         IR_correction = P_controller_IR(0) + 
-                              //I_controller_IR(0, IRIntegrator, dt) + 
-                              D_controller_IR(0, prevIRError, dt);
-    }
+    
+    IR_correction = (IR_correction_left + IR_correction_right)/2;
     
     double translational_correction = P_controller_translational(translational_error) +
                                       //I_controller_translational(translational_error, translationalIntegrator, dt) +
@@ -144,13 +144,22 @@ void pidController::pid()
     double angular_correction = P_controller_angular(angular_error) + 
                                 //I_controller_angular(angular_error, angularIntegrator, dt) + 
                                 D_controller_angular(angular_error, prevAngularError, dt);
+    angular_correction = 0;
+    translational_correction = 0;
                                       
     // Calculate new speeds
-    leftSpeed += (translational_correction + angular_correction - IR_correction);
-    rightSpeed += (translational_correction - angular_correction + IR_correction);
-    
+    leftSpeed = DEFAULT_LEFT_SPEED + (translational_correction + angular_correction + (IR_correction/2));
+    rightSpeed = DEFAULT_RIGHT_SPEED + (translational_correction - angular_correction - (IR_correction/2)); 
+    printf("LEFT: %f (%f)\tRIGHT: %f (%f) CORRECTION: %f\r\n", leftSpeed, left_IR, rightSpeed, right_IR, IR_correction);
+    //printf("%f\t%f\t%f\r\n", translational_correction, IR_correction, (translational_correction + angular_correction - IR_correction));
+
     // Make sure speeds stay within the proper bounds
     boundSpeeds();
+    
+    if(leftSpeed < 0)
+        leftSpeed = 0;
+    if(rightSpeed < 0)
+        rightSpeed = 0;
     
     setLeftPwm(leftSpeed);
     setRightPwm(rightSpeed);
@@ -160,7 +169,6 @@ void pidController::pid()
     RightEncoder->reset();
     timer.reset();
 }
-
 double pidController::P_controller_translational(double error)
 {
     return (KP_translational*error);
@@ -239,7 +247,7 @@ void pidController::setLeftPwm(double speed)
     if(speed < 0)
     {
         *LMotorForward = STOP;
-        *LMotorReverse = -speed;
+        *LMotorReverse = STOP;
     }
     else if(speed > 0)
     {
@@ -263,7 +271,7 @@ void pidController::setRightPwm(double speed)
     else if(speed < 0)
     {
         *RMotorForward = STOP;
-        *RMotorReverse = -speed;
+        *RMotorReverse = STOP;
     }
     else
     {
@@ -358,7 +366,7 @@ void pidController::turnRight()
     int i = 0;
     while(LeftEncoder->getPulses() != 0 &&  RightEncoder->getPulses() != 0)
     {
-        //printf("Looped: %d\r\n", i);
+        //////printf("Looped: %d\r\n", i);
         LeftEncoder->reset();
         RightEncoder->reset();
         
@@ -371,7 +379,7 @@ void pidController::turnRight()
     
     while(LeftEncoder->getPulses() < LEFT_TURN_ENCODER_COUNT ||  RightEncoder->getPulses() < LEFT_TURN_ENCODER_COUNT)
     {
-        //printf(" Left Encoder: %d Right Encoder: %d \r\n", LeftEncoder->getPulses(), RightEncoder->getPulses());
+        //////printf(" Left Encoder: %d Right Encoder: %d \r\n", LeftEncoder->getPulses(), RightEncoder->getPulses());
         
         if(LeftEncoder->getPulses() >= LEFT_TURN_ENCODER_COUNT)
         {
@@ -398,8 +406,8 @@ void pidController::moveForward()
 {
     int front_left_LED = 0, front_right_LED = 0, back_left_LED = 0, back_right_LED = 0;
 
-    setLeftPwm(DEFAULT_FORWARD_SPEED);
-    setRightPwm(DEFAULT_FORWARD_SPEED);
+    setLeftPwm(DEFAULT_LEFT_SPEED);
+    setRightPwm(DEFAULT_RIGHT_SPEED);
     
     *IR_out_left_front = 1;
     for(int i = 0; i < 10; i++)
@@ -436,13 +444,13 @@ void pidController::moveForward()
     turning = false;
 
 //    if(back_left_LED > 70)
-//        printf("LEFT WALL %d\r\n", back_left_LED);
+//        ////printf("LEFT WALL %d\r\n", back_left_LED);
 //
 //    if(back_right_LED > 350)
-//        printf("RIGHT WALL\r\n");
+//        ////printf("RIGHT WALL\r\n");
     if(front_left_LED > IR_FRONT_WALL || front_right_LED > IR_FRONT_WALL)
     {
-        printf("TURNING LEFT\r\n");
+        ////printf("TURNING LEFT\r\n");
         turnLeft();
     }
 }

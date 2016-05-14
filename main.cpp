@@ -48,7 +48,7 @@ int main()
     // Interrupt controller
     Ticker interrupt;
     
-//    interrupt.attach_us(&pid, &pidController::pid, 75000);
+    //interrupt.attach_us(&pid, &pidController::pid, 5000);
     
     while(mybutton);
 
@@ -57,8 +57,8 @@ int main()
 
     while(1)
     {
-        //printf("hello i'm in the main loop");
-        pid.moveForward();
+        pid.pid();
+        wait(0.005);
     }
 
     /*while(1); //back up straight, until we give go ahead to PIDs
