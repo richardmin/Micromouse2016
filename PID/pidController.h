@@ -29,6 +29,8 @@ class pidController {
         // Starts the PID Timer
         void start();
         
+         void moveForward();
+        
     private:
 
         // Helper functions to determine PID correction

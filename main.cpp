@@ -48,7 +48,7 @@ int main()
     // Interrupt controller
     Ticker interrupt;
     
-    interrupt.attach_us(&pid, &pidController::pid, 75000);
+//    interrupt.attach_us(&pid, &pidController::pid, 75000);
     
     while(mybutton);
 
@@ -57,6 +57,7 @@ int main()
 
     while(1)
     {
+        //printf("hello i'm in the main loop");
         pid.moveForward();
     }
 
