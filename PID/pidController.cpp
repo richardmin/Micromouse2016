@@ -396,8 +396,7 @@ void pidController::turnRight()
 
 void pidController::moveForward() 
 {
-    int front_left_LED = 0;
-    int front_right_LED = 0;
+    int front_left_LED = 0, front_right_LED = 0, back_left_LED = 0, back_right_LED = 0;
 
     leftSpeed = DEFAULT_FORWARD_SPEED;
     rightSpeed = DEFAULT_FORWARD_SPEED;
@@ -418,11 +417,32 @@ void pidController::moveForward()
     front_right_LED /= 10;
     *IR_out_right_back = 0;
 
+    *IR_out_left_back = 1;
+    for(int i = 0; i < 10; i++)
+    {
+        back_left_LED += 1000*IR_in_left_back->read();
+    }
+    back_left_LED /= 10;
+    *IR_out_left_back = 0;
+   
+    *IR_out_right_back = 1;
+    for(int i = 0; i < 10; i++)
+    {
+        back_right_LED += 1000*IR_in_right_back->read();
+    }
+    back_right_LED /= 10;
+    *IR_out_right_back = 0;
+
     turning = false;
 
+    if(back_left_LED < 70)
+        printf("NO LEFT WALL\r\n");
 
+    if(back_right_LED < 350)
+        printf("NO RIGHT WALL\r\n");
     if(front_left_LED > IR_FRONT_WALL || front_right_LED > IR_FRONT_WALL)
     {
+        printf("TURNING LEFT\r\n");
         turnLeft();
     }
 }
