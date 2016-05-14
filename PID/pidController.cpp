@@ -1,6 +1,7 @@
 #include "pidController.h"
 #include "AVEncoder/AVEncoder.h"
 #include "Gyro/GyroConstants.h"
+#include "LED/IRLEDConstants.h"
 #include <cmath>
 
 pidController::pidController(AVEncoder* left, AVEncoder* right, 
@@ -14,8 +15,8 @@ pidController::pidController(AVEncoder* left, AVEncoder* right,
   IR_in_left_back(in_left_back), IR_in_left_front(in_left_front), IR_in_right_front(in_right_front), IR_in_right_back(in_right_back),
   IR_out_left_back(out_left_back), IR_out_left_front(out_left_front), IR_out_right_front(out_right_front), IR_out_right_back(out_right_back)
 {
-    leftSpeed = 500/1885.0;
-    rightSpeed = 500/1885.0;
+    leftSpeed = 0;
+    rightSpeed = 0;
     
     prevTranslationalError = 0;
     prevAngularError = 0;
@@ -391,4 +392,37 @@ void pidController::turnRight()
     //setLeftPwm(leftSpeed);
     //setRightPwm(rightSpeed);
     turning = false;
+}
+
+void pidController::moveForward() 
+{
+    int front_left_LED = 0;
+    int front_right_LED = 0;
+
+    leftSpeed = 500/1885.0;
+    rightSpeed = 500/1885.0;
+
+    *IR_out_left_front = 1;
+    for(int i = 0; i < 10; i++)
+    {
+        front_left_LED += 1000*IR_in_left_front->read();
+    }
+    front_left_LED /= 10;
+    *IR_out_left_back = 0;
+   
+    *IR_out_right_front = 1;
+    for(int i = 0; i < 10; i++)
+    {
+        front_right_LED += 1000*IR_in_right_front->read();
+    }
+    front_right_LED /= 10;
+    *IR_out_right_back = 0;
+
+    turning = false;
+
+
+    if(front_left_LED > IR_FRONT_WALL || front_right_LED > IR_FRONT_WALL)
+    {
+        turnLeft();
+    }
 }

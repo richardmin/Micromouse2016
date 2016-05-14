@@ -48,20 +48,16 @@ int main()
     // Interrupt controller
     Ticker interrupt;
     
+    interrupt.attach_us(&pid, &pidController::pid, 75000);
     
-    //Location curLoc = Location(0, 0);
-    //interrupt.attach_us(&pid, &pidController::pid, 1000);
-    
-    while(mybutton)
-    {
-        ;
-    }
+    while(mybutton);
+
     //Intialize final things
     pid.start();
+
     while(1)
     {
-        pid.pid();
-        wait(0.05);
+        pid.moveForward();
     }
 
     /*while(1); //back up straight, until we give go ahead to PIDs
