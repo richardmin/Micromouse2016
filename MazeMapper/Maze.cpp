@@ -1,4 +1,3 @@
-#include <iostream>
 #include "Maze.h"
 
 #define ARRAY_SIZE(a) (sizeof(a)/sizeof(*a))
