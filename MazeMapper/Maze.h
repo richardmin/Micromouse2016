@@ -20,38 +20,25 @@ protected:
     MouseMovement nextMovement;
 
     bool isOpen(unsigned x, unsigned y, Dir d) const;
-    void setOpen(unsigned x, unsigned y, Dir d);
+    
 
     void moveForward();
     void moveBackward();
 
-    inline void turnClockwise() {
-        heading = clockwise(heading);
-    }
-
-    inline void turnCounterClockwise() {
-        heading = counterClockwise(heading);
-    }
-
-    inline void turnAround() {
-        heading = opposite(heading);
-    }
+    void turnClockwise();
+    void turnCounterClockwise();
+    void turnAround();
 
 public:
     Maze(MazeDefinitions::MazeEncodingName name, PathFinder *pathFinder);
 
-    inline bool wallInFront() const {
-        return !isOpen(mouseX, mouseY, heading);
-    }
+    bool wallInFront() const;
 
-    inline bool wallOnLeft() const {
-        return !isOpen(mouseX, mouseY, counterClockwise(heading));
-    }
+    bool wallOnLeft() const;
 
-    inline bool wallOnRight() const {
-        return !isOpen(mouseX, mouseY, clockwise(heading));
-    }
+    bool wallOnRight() const;
 
+    void setOpen(unsigned x, unsigned y, Dir d);
     /**
      * Start running the mouse through the maze.
      * Terminates when the PathFinder's nextMovement method returns MouseMovement::Finish.

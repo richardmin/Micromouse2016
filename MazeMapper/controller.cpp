@@ -161,19 +161,17 @@ public:
     MouseMovement nextMovement(unsigned x, unsigned y, const Maze& maze)
     {
         
-        if(pause)
-        {
-            std::cin.ignore(10000, '\n');
-            std::cin.clear();
-        }
         
         coord block;
         block.x = x;
         block.y = y;
+
+        //todo: CREATE IR (so we can tell if there's walls in front or not)
         bool front = maze.wallInFront();
         bool left = maze.wallOnLeft();
         bool right = maze.wallOnRight();
         
+        //todo: reverse the goal and reset the values. 
         if(isAtCenter(x, y))
             return Finish;
         
@@ -223,6 +221,8 @@ public:
             }
             case INVALID:
             //cry
+            {
+            }
         }
         
         
@@ -357,21 +357,21 @@ private:
     BitVector256 horizontal;
     Dir heading;
     unsigned int Distance[MazeDefinitions::MAZE_LEN][MazeDefinitions::MAZE_LEN];
-    unsigned int infinity = ~0;
+    const unsigned int infinity = ~0;
     
     
 };
 
-int begin_controller() {
-    // MazeDefinitions::MazeEncodingName mazeName = MazeDefinitions::MAZE_CAMM_2012;
+void begin_controller() {
+    MazeDefinitions::MazeEncodingName mazeName = MazeDefinitions::MAZE_CAMM_2012;
     bool pause = true;
     
     FloodFillFinder floodFill(pause);
-    LeftWallFollower leftWallFollower(pause);
     Maze maze(mazeName, &floodFill);
     
     maze.start();
 }
+
 
 
 
