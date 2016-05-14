@@ -2,9 +2,11 @@
 #include "AVEncoder.h"
 #include "PINS/pinouts.h"
 #include "MazeMapper/Maze.h"
+#include "MazeMapper/Location.h"
 #include "LED/LEDCollector.h"
 #include "PID/pidController.h"
 #include "PID/pidConstants.h"
+#include "Gyro/Gyro.h"
 
 
 DigitalOut myled(LED1);
@@ -13,7 +15,6 @@ DigitalIn mybutton(USER_BUTTON);
 
 int main()  
 {           
-//printf("Random print line\r\n");
     // Controller for IR receivers
     AnalogIn IR_receiver1(IR_LEFT_BACK);
     AnalogIn IR_receiver2(IR_LEFT_FRONT);
@@ -41,33 +42,41 @@ int main()
     // PID controller
     pidController pid = pidController(&LeftEncoder, &RightEncoder,
                                       &LMotorForward, &LMotorReverse,
-                                      &RMotorForward, &RMotorReverse);
-                                      
+                                      &RMotorForward, &RMotorReverse,
+                                      &IR_receiver1, &IR_receiver2, &IR_receiver3, &IR_receiver4,
+                                      &IR_emitter1, &IR_emitter2, &IR_emitter3, &IR_emitter4);
     // Interrupt controller
     Ticker interrupt;
     
     
     //Location curLoc = Location(0, 0);
     //interrupt.attach_us(&pid, &pidController::pid, 1000);
-    //interrupt.detach(); //this detaches pid. We need to do this when the 
     
-    while(mybutton);
-
+    while(mybutton)
+    {
+        ;
+    }
     //Intialize final things
     pid.start();
-
     while(1)
     {
         pid.pid();
         wait(0.05);
     }
 
+    /*while(1); //back up straight, until we give go ahead to PIDs
 
-    // Straighten out the back of the mouse.
-    // setLeftPwm(-1);
-    // setRightPwm(-1);
-    // 
+    //this way the LED's get initialized properly
+    MazeRunner runner = MazeRunner();
+    MazeMapper mapper = MazeMapper();
+    
+    bool hasMapped = false;
 
-    // begin_controller(); //global function declared in controller.cpp
-    //
+    while(!hasMapped) //do mapping mode until we decide otherwise
+    {
+        
+    }
+
+    //attach an interrrupt for a button to reset run (location reset to 0)
+    */
 }

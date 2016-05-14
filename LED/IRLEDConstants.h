@@ -14,7 +14,7 @@ static float measured_right_forward;
 static float measured_left_back;
 static float measured_right_back;
 
-
+const static int IR_FRONT_WALL = 250;
 
 // Default amount of time we're polling our IR LEDs
 const int LED_ON_TIME = 1000;

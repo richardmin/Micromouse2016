@@ -14,7 +14,7 @@ class pidController {
                       PwmOut* LForward, PwmOut* LReverse,
                       PwmOut* RReverse, PwmOut* RForward,
                       AnalogIn* IR_in_left_back, AnalogIn* IR_in_left_front, AnalogIn* IR_in_right_front, AnalogIn* IR_in_right_back,
-                      DigitalOut* IR_out_left_back, DigitalOut* IR_out_left_front, DigitalOut* IR_out_right_front, DigitalOut* IR_out_right_back)
+                      DigitalOut* IR_out_left_back, DigitalOut* IR_out_left_front, DigitalOut* IR_out_right_front, DigitalOut* IR_out_right_back);
     
         // Main function in charge of calculating new motor speeds
         void pid();
@@ -86,11 +86,11 @@ class pidController {
         // Integral variables
         unsigned int translationalIntegrator;
         unsigned int angularIntegrator;
-        unsigned int IRIntegrator
+        unsigned int IRIntegrator;
         
         // IR error
-        unsigned int left_IR_base;
-        unsigned int right_IR_base;
+        float left_IR_base;
+        float right_IR_base;
         
         // Interrupt controller variables
         Timer timer;
