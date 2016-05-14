@@ -4,10 +4,14 @@
 
 pidController::pidController(AVEncoder* left, AVEncoder* right, 
                              PwmOut* LForward, PwmOut* LReverse, 
-                             PwmOut* RReverse, PwmOut* RForward)
+                             PwmOut* RReverse, PwmOut* RForward,
+                             AnalogIn* in_left_back, AnalogIn* in_left_front, AnalogIn* in_right_front, AnalogIn* in_right_back,
+                            DigitalOut* out_left_back, DigitalOut* out_left_front, DigitalOut* out_right_front, DigitalOut* out_right_back)
 : LeftEncoder(left), RightEncoder(right),
   LMotorForward(LForward), LMotorReverse(LReverse),
-  RMotorForward(RForward), RMotorReverse(RReverse)
+  RMotorForward(RForward), RMotorReverse(RReverse),
+  IR_in_left_back(in_left_back), IR_in_left_front(in_left_front), IR_in_right_front(in_right_front), IR_in_right_back(in_right_back),
+  IR_out_left_back(out_left_back), IR_out_left_front(out_left_front), IR_out_right_front(out_right_front), IR_out_right_back(out_right_back)
 {
     leftSpeed = 500/1885.0;
     rightSpeed = 500/1885.0;

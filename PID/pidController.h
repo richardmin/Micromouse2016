@@ -12,7 +12,9 @@ class pidController {
         // Constructor
         pidController(AVEncoder* left, AVEncoder* right,
                       PwmOut* LForward, PwmOut* LReverse,
-                      PwmOut* RReverse, PwmOut* RForward);
+                      PwmOut* RReverse, PwmOut* RForward,
+                      AnalogIn* IR_in_left_back, AnalogIn* IR_in_left_front, AnalogIn* IR_in_right_front, AnalogIn* IR_in_right_back,
+                      DigitalOut* IR_out_left_back, DigitalOut* IR_out_left_front, DigitalOut* IR_out_right_front, DigitalOut* IR_out_right_back)
     
         // Main function in charge of calculating new motor speeds
         void pid();
@@ -53,6 +55,18 @@ class pidController {
         PwmOut* LMotorReverse;
         PwmOut* RMotorForward;
         PwmOut* RMotorReverse;
+        
+        // IR Readings
+        AnalogIn* IR_in_left_back;
+        AnalogIn* IR_in_left_front;
+        AnalogIn* IR_in_right_front;
+        AnalogIn* IR_in_right_back;
+        
+        // IR Controllers
+        DigitalOut* IR_out_left_back;
+        DigitalOut* IR_out_left_front;
+        DigitalOut* IR_out_right_front;
+        DigitalOut* IR_out_right_back;
 
         // Variables that hold the relative speed of each motor
         double leftSpeed;
