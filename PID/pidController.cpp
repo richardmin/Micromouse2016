@@ -1,6 +1,7 @@
 #include "pidController.h"
 #include "AVEncoder/AVEncoder.h"
 #include "Gyro/GyroConstants.h"
+#include <cmath>
 
 pidController::pidController(AVEncoder* left, AVEncoder* right, 
                              PwmOut* LForward, PwmOut* LReverse, 
@@ -214,16 +215,48 @@ void pidController::turnLeft()
 {
     // TODO: turning should be curved
     turning = true;
-    stop();
-    setRightPwm(0.25);
+    
+    *LMotorForward = 1;
+    *LMotorReverse = 1;
+    *RMotorForward = 1;
+    *RMotorReverse = 1;
+    
+    int i = 0;
+    while(LeftEncoder->getPulses() != 0 &&  RightEncoder->getPulses() != 0)
+    {
+        //printf("Looped: %d\r\n", i);
+        LeftEncoder->reset();
+        RightEncoder->reset();
+        
+        wait(.01);
+        i++;
+    }
+    
+    setRightPwm(.15);
+    setLeftPwm(-.15);
+    
+    while(LeftEncoder->getPulses() < LEFT_TURN_ENCODER_COUNT ||  RightEncoder->getPulses() < LEFT_TURN_ENCODER_COUNT)
+    {
+        //printf(" Left Encoder: %d Right Encoder: %d \r\n", LeftEncoder->getPulses(), RightEncoder->getPulses());
+        
+        if(LeftEncoder->getPulses() >= LEFT_TURN_ENCODER_COUNT)
+        {
+            setLeftPwm(0.0);    
+        }
+        
+        if(RightEncoder->getPulses() >= LEFT_TURN_ENCODER_COUNT)
+        {
+            setRightPwm(0.0);    
+        }
+    }
     
     stop();
     
     LeftEncoder->reset();
     RightEncoder->reset();
     
-    setLeftPwm(leftSpeed);
-    setRightPwm(rightSpeed);
+    //setLeftPwm(leftSpeed);
+    //setRightPwm(rightSpeed);
     turning = false;
 }
 
@@ -232,7 +265,11 @@ void pidController::turnRight()
     // TODO: turning should be curved
     turning = true;
     stop();
+    LeftEncoder->reset();
+    RightEncoder->reset();
+    
     setLeftPwm(0.25);
+    setRightPwm(-.25);
     
     stop();
     

@@ -1,12 +1,11 @@
 #include "mbed.h"
 #include "AVEncoder.h"
 #include "PINS/pinouts.h"
-#include "MazeMapper/Maze.h"
-#include "MazeMapper/Location.h"
+//#include "MazeMapper/Maze.h"
+//#include "MazeMapper/Location.h"
 #include "LED/LEDCollector.h"
 #include "PID/pidController.h"
 #include "PID/pidConstants.h"
-#include "Gyro/Gyro.h"
 
 
 DigitalOut myled(LED1);
@@ -15,7 +14,7 @@ DigitalIn mybutton(USER_BUTTON);
 
 int main()  
 {           
-printf("Random print line\r\n");
+//printf("Random print line\r\n");
     // Controller for IR receivers
     AnalogIn IR_receiver1(IR_LEFT_BACK);
     AnalogIn IR_receiver2(IR_LEFT_FRONT);
@@ -50,22 +49,29 @@ printf("Random print line\r\n");
     
     
     //Location curLoc = Location(0, 0);
-    //interrupt.attach_us(&pid, &pidController::pid, 1000);
+    interrupt.attach_us(&pid, &pidController::pid, 75000);
     
-    printf("PLEASE");
+//    printf("PLEASE");
     while(mybutton)
     {
-        printf("Waiting");
+        //printf("Waiting");
         ;
     }
     //Intialize final things
     pid.start();
-    printf("Random print line\r\n");
+//    printf("Random print get\r\n");
     while(1)
     {
-        printf("Random print line\r\n");
-        pid.pid();
-        wait(0.05);
+      //  wait(.5);
+       // pid.pid();
+        
+       // wait(.05);
+        
+//        pid.turnLeft();
+        
+        
+  //      wait(3);
+        
     }
 
     /*while(1); //back up straight, until we give go ahead to PIDs
@@ -84,3 +90,4 @@ printf("Random print line\r\n");
     //attach an interrrupt for a button to reset run (location reset to 0)
     */
 }
+	
