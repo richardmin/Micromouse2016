@@ -88,6 +88,10 @@ class pidController {
         unsigned int angularIntegrator;
         unsigned int IRIntegrator
         
+        // IR error
+        unsigned int left_IR_base;
+        unsigned int right_IR_base;
+        
         // Interrupt controller variables
         Timer timer;
         

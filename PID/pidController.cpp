@@ -24,6 +24,24 @@ pidController::pidController(AVEncoder* left, AVEncoder* right,
     translationalIntegrator = 0;
     angularIntegrator = 0;
     IRIntegrator = 0;
+    
+    *IR_out_left_back = 1;
+    left_IR_base = 0;
+    for(int i = 0; i < 100; i++)
+    {
+        left_IR_base += IR_in_left_back->read();
+    }
+    left_IR_base /= 100;
+    *IR_out_left_back = 0;
+   
+    *IR_out_right_back = 1;
+    right_IR_base = 0;
+    for(int i = 0; i < 100; i++)
+    {
+        right_IR_base += IR_in_right_back->read();
+    }
+    right_IR_base /= 100;
+    *IR_out_right_back = 0;
         
     turning = false;
     running = false;
@@ -60,6 +78,16 @@ void pidController::pid()
     int left_encoder_pulses = LeftEncoder->getPulses();
     int right_encoder_pulses = RightEncoder->getPulses();
     
+    // Read left IR
+    *IR_out_left_back = 1;
+    int left_IR = IR_in_left_back->read();
+    *IR_out_left_back = 0;
+    
+    // Read right IR
+    *IR_out_right_back = 1;
+    int right_IR = IR_in_right_back->read();
+    *IR_out_right_back = 0;
+    
     // Calculate actual translational speed
     double actual_translational_speed = (left_encoder_pulses + right_encoder_pulses); // pulses
     actual_translational_speed /= dt; // pulses/us
@@ -78,6 +106,16 @@ void pidController::pid()
     // Determine the error in the translational speed and the angular speed
     double translational_error = IDEAL_TRANSLATIONAL_SPEED - actual_translational_speed;
     double angular_error = IDEAL_ANGULAR_SPEED - actual_angular_speed;
+    int left_IR_error = left_IR;
+    int right_IR_error = right_IR;
+    
+    double IR_correction = 0;
+    if(abs(IR_error) > 40)
+    {
+        IR_correction = P_controller_translational(IR_error) +
+                        //I_controller_translational(translational_error, translationalIntegrator, dt) +
+                        D_controller_translational(IR_error, prevIRError, dt);
+    }
     
     double translational_correction = P_controller_translational(translational_error) +
                                       //I_controller_translational(translational_error, translationalIntegrator, dt) +
@@ -88,8 +126,8 @@ void pidController::pid()
                                 D_controller_angular(angular_error, prevAngularError, dt);
                                       
     // Calculate new speeds
-    leftSpeed += (translational_correction + angular_correction);
-    rightSpeed += (translational_correction - angular_correction);
+    leftSpeed += (translational_correction + angular_correction - IR_correction);
+    rightSpeed += (translational_correction - angular_correction + IR_correction);
     
     // Make sure speeds stay within the proper bounds
     boundSpeeds();
