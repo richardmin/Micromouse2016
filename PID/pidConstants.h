@@ -27,4 +27,6 @@ static int LEFT_TURN_ENCODER_COUNT = 175;
 const static int LEFT_IR_WALL = 100;
 const static int RIGHT_IR_WALL = 350;
 
+
+const static int DEFAULT_FORWARD_SPEED = 500/1885.0;
 #endif

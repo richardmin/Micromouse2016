@@ -399,8 +399,8 @@ void pidController::moveForward()
     int front_left_LED = 0;
     int front_right_LED = 0;
 
-    leftSpeed = 500/1885.0;
-    rightSpeed = 500/1885.0;
+    leftSpeed = DEFAULT_FORWARD_SPEED;
+    rightSpeed = DEFAULT_FORWARD_SPEED;
 
     *IR_out_left_front = 1;
     for(int i = 0; i < 10; i++)
