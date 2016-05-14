@@ -5,7 +5,6 @@
 #include "LED/LEDCollector.h"
 #include "PID/pidController.h"
 #include "PID/pidConstants.h"
-#include "Gyro/Gyro.h"
 
 
 DigitalOut myled(LED1);
@@ -14,7 +13,7 @@ DigitalIn mybutton(USER_BUTTON);
 
 int main()  
 {           
-printf("Random print line\r\n");
+//printf("Random print line\r\n");
     // Controller for IR receivers
     AnalogIn IR_receiver1(IR_LEFT_BACK);
     AnalogIn IR_receiver2(IR_LEFT_FRONT);

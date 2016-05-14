@@ -16,8 +16,10 @@ const static double KD_angular = 0.00001;
 
 // Speed variables
 const static int STOP = 0;
-static int IDEAL_ANGULAR_SPEED = -50; // In mm/s
+static int IDEAL_ANGULAR_SPEED = -67; // In mm/s
 static int IDEAL_TRANSLATIONAL_SPEED = 500; // In mm/s
 
+
+static int LEFT_TURN_ENCODER_COUNT = 175;
 
 #endif
