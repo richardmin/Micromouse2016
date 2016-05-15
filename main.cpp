@@ -68,12 +68,15 @@ int main()
         
         if(val < 90)
         {
-            myled = 1;
+            
             pid.turnLeftFromMoving();
+            
             pid.moveForwardOneCellNotMoving();
+            
             pid.turnLeft();
             pid.moveForwardOneCellNotMoving();
-            while(1);
+            myled = 1;
+            while(1) {};
 
             myled = 0;
         }

@@ -341,6 +341,9 @@ void pidController::turnLeftFromMoving()
 void pidController::turnLeft()
 {
     turning = true;
+    
+    LeftEncoder->reset();
+    RightEncoder->reset();
    
     setRightPwm(.15);
     setLeftPwm(-.15);
@@ -359,6 +362,10 @@ void pidController::turnLeft()
     }
         
     stop();
+    setRightPwm(0);
+    setLeftPwm(0);
+    
+    turning = false;
 }
 
 void pidController::moveForwardOneCellNotMoving()
