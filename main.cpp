@@ -64,18 +64,17 @@ int main()
             val += 1000*IR_receiver1.read();
         }
         val /= 10;
-        IR_emitter1 = 0;
-        
-        if(val < 90)
+        printf("%f\r\n", val);
+        if(val < 160)
         {
             myled = 1;
             pid.turnLeftFromMoving();
             
-            pid.moveForwardOneCellNotMoving();
-            
-            pid.turnLeft();
-            pid.moveForwardOneCellNotMoving();
-            //pid.pause();
+//            pid.moveForwardOneCellNotMoving();
+//            
+//            pid.turnLeft();
+//            pid.moveForwardOneCellNotMoving();
+            pid.pause();
 
             myled = 0;
         }

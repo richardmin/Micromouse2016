@@ -30,6 +30,7 @@ class pidController {
 
         void moveForwardOneCellNotMoving();
         
+        void pause();        
         
         // Starts the PID Timer
         void start();
