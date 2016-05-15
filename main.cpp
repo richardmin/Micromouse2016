@@ -116,8 +116,8 @@ int main()
         pid.pid();
         led.pollLEDS(10);
         bool front = led.wallInFront();
-        bool right = led.wallToLeft();
-        bool left = led.wallToRight();
+        bool left = led.wallToLeft();
+        bool right = led.wallToRight();
         int arr[3] = {0, 0, 0};
         int index = 0;
 
@@ -148,10 +148,12 @@ int main()
             break;
             case 2:
             pid.turnRightFromMoving();
+            pid.moveForwardOneCellNotMoving();
             continue;
             break;
             case 3:
             pid.turnLeftFromMoving();
+            pid.moveForwardOneCellNotMoving();
             continue;
             break;
         }
@@ -159,6 +161,67 @@ int main()
 
     }
     
+
+    //LEFT WALL FOLLOWER
+    IR_emitter1 = 1;
+    IR_emitter2 = 1;
+    IR_emitter3 = 1;
+    IR_emitter4 = 1;
+    LEDCollector led;
+    while(1)
+    {
+        pid.pid();
+        led.pollLEDS(10);
+        bool front = led.wallInFront();
+        bool left = led.wallToLeft();
+
+        if(left)
+        {
+            pid.turnLeftFromMoving();
+            pid.moveForwardOneCellNotMoving();
+        }
+        else if(front)
+        {
+            //continue
+        }
+        else
+        {
+            pid.turnAround();
+        }
+
+
+    }
+
+
+    //RIGHT WALL FOLLOWER
+    IR_emitter1 = 1;
+    IR_emitter2 = 1;
+    IR_emitter3 = 1;
+    IR_emitter4 = 1;
+    LEDCollector led;
+    while(1)
+    {
+        pid.pid();
+        led.pollLEDS(10);
+        bool front = led.wallInFront();
+        bool right = led.wallToRight();
+
+        if(right)
+        {
+            pid.turnRightFromMoving();
+            pid.moveForwardOneCellNotMoving();
+        }
+        else if(front)
+        {
+            //continue
+        }
+        else
+        {
+            pid.turnAround(); //should continue forwards.
+        }
+
+
+    }
 
     /*while(1); //back up straight, until we give go ahead to PIDs
 
