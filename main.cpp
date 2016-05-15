@@ -200,12 +200,12 @@ int main()
         bool front = led.wallInFront();
         bool right = led.wallToRight();
 
-        if(right)
+        if(!right)
         {
             pid.turnRightFromMoving();
             pid.moveForwardOneCellNotMoving();
         }
-        else if(front)
+        else if(!front)
         {
             //continue
         }
