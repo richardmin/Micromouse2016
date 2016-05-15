@@ -15,25 +15,22 @@ DigitalIn mybutton(USER_BUTTON);
 //RNG from https://developer.mbed.org/questions/61158/Random-number-in-C/
 AnalogIn rng_read (RNG_SEED);
  
-unsigned int random_generator (void)
-{
-    unsigned int x = 0;
-    unsigned int iRandom = 0;
-    
-    
-    
-    for (x = 0; x <= 32; x += 2)
-    {
-        iRandom += ((rng_read.read_u16() % 3) << x);
-        wait_us (10);
-    }
-    
-    return iRandom;
-}
-
-
 int main()  
 {           
+
+
+    uint32_t seed =0;
+    const int loops = 1; // increase if LSB has a bias. 
+     
+    for (int i=0;i<(32*loops);i++) {
+      seed ^= rng_read.read_u16();
+      if (seed & 1<31) { // shift left and wrap.
+        seed <<= 1;
+        seed |= 1;
+      } else
+        seed <<= 1;
+    }
+    srand(seed);
     // Controller for IR receivers
     AnalogIn IR_receiver1(IR_LEFT_BACK);
     AnalogIn IR_receiver2(IR_LEFT_FRONT);
@@ -74,30 +71,30 @@ int main()
     //Intialize final things
     pid.start(); 
 
-    while(1)
-    {
-        pid.pid();
-        IR_emitter4 = 1;
-        float val = 0;
-        for(int i = 0; i < 10; i++)
-        {
-            val += 1000*IR_receiver4.read();
-        }
-        val /= 10;
-        if(val < 350)
-        {
-            myled = 1;
-            pid.turnRightFromMoving();
+//     while(1)
+//     {
+//         pid.pid();
+//         IR_emitter4 = 1;
+//         float val = 0;
+//         for(int i = 0; i < 10; i++)
+//         {
+//             val += 1000*IR_receiver4.read();
+//         }
+//         val /= 10;
+//         if(val < 350)
+//         {
+//             myled = 1;
+//             pid.turnRightFromMoving();
             
-            pid.moveForwardOneCellNotMoving();
+//             pid.moveForwardOneCellNotMoving();
             
-            pid.turnRight();
-//            pid.moveForwardOneCellNotMoving();
+//             pid.turnRight();
+// //            pid.moveForwardOneCellNotMoving();
 
-            myled = 0;
-        }
-        wait(0.005);
-    }
+//             myled = 0;
+//         }
+//         wait(0.005);
+//     }
 
 
     
@@ -112,7 +109,7 @@ int main()
     // while(1)
     // {
     //     pid.pid();
-    //     led.pollLEDS(10);
+    //     led.pollLEDs(10);
     //     bool front = led.wallInFront();
     //     bool left = led.wallToLeft();
     //     bool right = led.wallToRight();
@@ -134,10 +131,9 @@ int main()
     //         continue;
     //     }
 
-    //     int rng = random_generator();
 
     //     //pick the random function
-    //     int funcNum = rng % index;
+    //     int funcNum = rand() % index;
     //     switch(arr[funcNum])
     //     {
     //         case 1:
@@ -169,7 +165,7 @@ int main()
     // while(1)
     // {
     //     pid.pid();
-    //     led.pollLEDS(10);
+    //     led.pollLEDs(10);
     //     bool front = led.wallInFront();
     //     bool left = led.wallToLeft();
 
@@ -191,35 +187,35 @@ int main()
     // }
 
 
-    // //RIGHT WALL FOLLOWER
-    // IR_emitter1 = 1;
-    // IR_emitter2 = 1;
-    // IR_emitter3 = 1;
-    // IR_emitter4 = 1;
-    // LEDCollector led;
-    // while(1)
-    // {
-    //     pid.pid();
-    //     led.pollLEDS(10);
-    //     bool front = led.wallInFront();
-    //     bool right = led.wallToRight();
+    //RIGHT WALL FOLLOWER
+    IR_emitter1 = 1;
+    IR_emitter2 = 1;
+    IR_emitter3 = 1;
+    IR_emitter4 = 1;
+    LEDCollector led;
+    while(1)
+    {
+        pid.pid();
+        led.pollLEDs(10);
+        bool front = led.wallInFront();
+        bool right = led.wallToRight();
 
-    //     if(right)
-    //     {
-    //         pid.turnRightFromMoving();
-    //         pid.moveForwardOneCellNotMoving();
-    //     }
-    //     else if(front)
-    //     {
-    //         //continue
-    //     }
-    //     else
-    //     {
-    //         pid.turnAround(); //should continue forwards.
-    //     }
+        if(right)
+        {
+            pid.turnRightFromMoving();
+            pid.moveForwardOneCellNotMoving();
+        }
+        else if(front)
+        {
+            //continue
+        }
+        else
+        {
+            pid.turnAround(); //should continue forwards.
+        }
 
 
-    // }
+    }
 
 
     /*while(1); //back up straight, until we give go ahead to PIDs

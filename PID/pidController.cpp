@@ -369,6 +369,36 @@ void pidController::moveForwardOneCellNotMoving()
 }
         
 
+void pidController::turnRightFromMoving()
+{
+    LeftEncoder->reset();
+    RightEncoder->reset();
+    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < 420)
+        ;
+    // TODO: turning should be curved
+    turning = true;
+    
+    stop();
+    
+    int i = 0;
+    
+    int leftPulses, rightPulses;
+    while(i < 50)
+    {
+        leftPulses = LeftEncoder->getPulses();
+        rightPulses = RightEncoder->getPulses();
+        LeftEncoder->reset();
+        RightEncoder->reset();
+        
+        if( leftPulses == 0 && rightPulses == 0)
+            i++;
+        else
+            i = 0;
+    }
+
+    //Now the mouse should have stopped appropriately.
+    turnRight();
+}
 void pidController::turnRight()
 {
     // TODO: turning should be curved
