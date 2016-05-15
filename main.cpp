@@ -83,6 +83,14 @@ int main()
         wait(0.005);
     }
 
+
+    /*
+    while(1)
+    {
+    
+    }
+    */
+
     /*while(1); //back up straight, until we give go ahead to PIDs
 
     //this way the LED's get initialized properly
