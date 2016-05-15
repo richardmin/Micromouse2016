@@ -49,6 +49,8 @@ pidController::pidController(AVEncoder* left, AVEncoder* right,
 
 void pidController::start()
 {
+    *IR_out_left_front = 1;
+    *IR_out_right_front = 1;
     timer.start();
     timer.reset();
     LeftEncoder->reset();
@@ -169,6 +171,7 @@ void pidController::pid()
     RightEncoder->reset();
     timer.reset();
 }
+
 double pidController::P_controller_translational(double error)
 {
     return (KP_translational*error);
@@ -309,32 +312,41 @@ void pidController::stop()
 
 void pidController::turnLeftFromMoving()
 {
+    // Move forward to center of square
     LeftEncoder->reset();
     RightEncoder->reset();
-    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < 420)
+    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < 410)
         ;
-    // TODO: turning should be curved
-    turning = true;
     
+    // Make sure momentum is gone
     stop();
-    
-    int i = 0;
-    
-    int leftPulses, rightPulses;
-    while(i < 50)
+    while(LeftEncoder->getPulses() != 0 || RightEncoder->getPulses() != 0)
     {
-        leftPulses = LeftEncoder->getPulses();
-        rightPulses = RightEncoder->getPulses();
         LeftEncoder->reset();
         RightEncoder->reset();
-        
-        if( leftPulses == 0 && rightPulses == 0)
-            i++;
-        else
-            i = 0;
+        wait(0.001);
     }
+    
+    // Move backwards if we hit the square
+    setLeftPwm(-0.05);
+    setRightPwm(-0.07);
+    while(1000*IR_in_left_front->read() > 920 || 1000*IR_in_right_front->read() > 920)
+        ;
+        
+    // Make sure momentum is gone from moving backwards
+    stop();
+    LeftEncoder->reset();
+    RightEncoder->reset();
+    while(LeftEncoder->getPulses() != 0 || RightEncoder->getPulses() != 0)
+    {
+        LeftEncoder->reset();
+        RightEncoder->reset();
+        wait(0.001);
+    }
+    
+    turning = true;
 
-    //Now the mouse should have stopped appropriately.
+    // Now the mouse should have stopped appropriately.
     turnLeft();
 }
 
@@ -350,8 +362,14 @@ void pidController::turnLeft()
     
     while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < LEFT_TURN_ENCODER_COUNT)
         ;
-        
+    
     stop();
+    while(LeftEncoder->getPulses() != 0 || RightEncoder->getPulses() != 0)
+    {
+        LeftEncoder->reset();
+        RightEncoder->reset();
+        wait(0.001);
+    }
     
     turning = false;
 }
@@ -364,10 +382,9 @@ void pidController::moveForwardOneCellNotMoving()
     
     LeftEncoder->reset();
     RightEncoder->reset();
-    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < 590)
+    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < 573)
         ;
 }
-        
 
 void pidController::turnRight()
 {

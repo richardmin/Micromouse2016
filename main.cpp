@@ -70,30 +70,14 @@ int main()
             myled = 1;
             pid.turnLeftFromMoving();
             
+            pid.moveForwardOneCellNotMoving();
+            
+            pid.turnLeft();
 //            pid.moveForwardOneCellNotMoving();
-//            
-//            pid.turnLeft();
-//            pid.moveForwardOneCellNotMoving();
-            pid.pause();
 
             myled = 0;
         }
         wait(0.005);
     }
 
-    /*while(1); //back up straight, until we give go ahead to PIDs
-
-    //this way the LED's get initialized properly
-    MazeRunner runner = MazeRunner();
-    MazeMapper mapper = MazeMapper();
-    
-    bool hasMapped = false;
-
-    while(!hasMapped) //do mapping mode until we decide otherwise
-    {
-        
-    }
-
-    //attach an interrrupt for a button to reset run (location reset to 0)
-    */
 }
