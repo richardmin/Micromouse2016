@@ -77,22 +77,21 @@ int main()
     while(1)
     {
         pid.pid();
-        IR_emitter1 = 1;
+        IR_emitter4 = 1;
         float val = 0;
         for(int i = 0; i < 10; i++)
         {
-            val += 1000*IR_receiver1.read();
+            val += 1000*IR_receiver4.read();
         }
         val /= 10;
-        printf("%f\r\n", val);
-        if(val < 160)
+        if(val < 350)
         {
             myled = 1;
-            pid.turnLeftFromMoving();
+            pid.turnRightFromMoving();
             
             pid.moveForwardOneCellNotMoving();
             
-            pid.turnLeft();
+            pid.turnRight();
 //            pid.moveForwardOneCellNotMoving();
 
             myled = 0;
@@ -104,137 +103,121 @@ int main()
     
 
 
-    //RANDOM MODE
-    IR_emitter1 = 1;
-    IR_emitter2 = 1;
-    IR_emitter3 = 1;
-    IR_emitter4 = 1;
-    LEDCollector led;
-    while(1)
-    {
-        pid.pid();
-        led.pollLEDS(10);
-        bool front = led.wallInFront();
-        bool left = led.wallToLeft();
-        bool right = led.wallToRight();
-        int arr[3] = {0, 0, 0};
-        int index = 0;
+    // //RANDOM MODE
+    // IR_emitter1 = 1;
+    // IR_emitter2 = 1;
+    // IR_emitter3 = 1;
+    // IR_emitter4 = 1;
+    // LEDCollector led;
+    // while(1)
+    // {
+    //     pid.pid();
+    //     led.pollLEDS(10);
+    //     bool front = led.wallInFront();
+    //     bool left = led.wallToLeft();
+    //     bool right = led.wallToRight();
+    //     int arr[3] = {0, 0, 0};
+    //     int index = 0;
 
 
-        //I AIN'T NO CS MAJOR
-        if(front)
-            arr[index++] = 1;
-        if(right)
-            arr[index++] = 2;
-        if(left)
-            arr[index++] = 3;
+    //     //I AIN'T NO CS MAJOR
+    //     if(front)
+    //         arr[index++] = 1;
+    //     if(right)
+    //         arr[index++] = 2;
+    //     if(left)
+    //         arr[index++] = 3;
 
-        if(index == 0) //dunno how you got here but that means you have a dead end
-        {
-            pid.turnAround();
-            continue;
-        }
+    //     if(index == 0) //dunno how you got here but that means you have a dead end
+    //     {
+    //         pid.turnAround();
+    //         continue;
+    //     }
 
-        int rng = random_generator();
+    //     int rng = random_generator();
 
-        //pick the random function
-        int funcNum = rng % index;
-        switch(arr[funcNum])
-        {
-            case 1:
-            pid.moveForwardOneCell();
-            continue; //pid continues forward.
-            break;
-            case 2:
-            pid.turnRightFromMoving();
-            pid.moveForwardOneCellNotMoving();
-            continue;
-            break;
-            case 3:
-            pid.turnLeftFromMoving();
-            pid.moveForwardOneCellNotMoving();
-            continue;
-            break;
-        }
+    //     //pick the random function
+    //     int funcNum = rng % index;
+    //     switch(arr[funcNum])
+    //     {
+    //         case 1:
+    //         pid.moveForwardOneCell();
+    //         continue; //pid continues forward.
+    //         break;
+    //         case 2:
+    //         pid.turnRightFromMoving();
+    //         pid.moveForwardOneCellNotMoving();
+    //         continue;
+    //         break;
+    //         case 3:
+    //         pid.turnLeftFromMoving();
+    //         pid.moveForwardOneCellNotMoving();
+    //         continue;
+    //         break;
+    //     }
 
 
-    }
+    // }
     
 
-    //LEFT WALL FOLLOWER
-    IR_emitter1 = 1;
-    IR_emitter2 = 1;
-    IR_emitter3 = 1;
-    IR_emitter4 = 1;
-    LEDCollector led;
-    while(1)
-    {
-        pid.pid();
-        led.pollLEDS(10);
-        bool front = led.wallInFront();
-        bool left = led.wallToLeft();
+    // //LEFT WALL FOLLOWER
+    // IR_emitter1 = 1;
+    // IR_emitter2 = 1;
+    // IR_emitter3 = 1;
+    // IR_emitter4 = 1;
+    // LEDCollector led;
+    // while(1)
+    // {
+    //     pid.pid();
+    //     led.pollLEDS(10);
+    //     bool front = led.wallInFront();
+    //     bool left = led.wallToLeft();
 
-        if(left)
-        {
-            pid.turnLeftFromMoving();
-            pid.moveForwardOneCellNotMoving();
-        }
-        else if(front)
-        {
-            //continue
-        }
-        else
-        {
-            pid.turnAround();
-        }
-
-
-    }
+    //     if(left)
+    //     {
+    //         pid.turnLeftFromMoving();
+    //         pid.moveForwardOneCellNotMoving();
+    //     }
+    //     else if(front)
+    //     {
+    //         //continue
+    //     }
+    //     else
+    //     {
+    //         pid.turnAround();
+    //     }
 
 
-    //RIGHT WALL FOLLOWER
-    IR_emitter1 = 1;
-    IR_emitter2 = 1;
-    IR_emitter3 = 1;
-    IR_emitter4 = 1;
-    LEDCollector led;
-    while(1)
-    {
-        pid.pid();
-        led.pollLEDS(10);
-        bool front = led.wallInFront();
-        bool right = led.wallToRight();
-
-        if(right)
-        {
-            pid.turnRightFromMoving();
-            pid.moveForwardOneCellNotMoving();
-        }
-        else if(front)
-        {
-            //continue
-        }
-        else
-        {
-            pid.turnAround(); //should continue forwards.
-        }
+    // }
 
 
-    }
+    // //RIGHT WALL FOLLOWER
+    // IR_emitter1 = 1;
+    // IR_emitter2 = 1;
+    // IR_emitter3 = 1;
+    // IR_emitter4 = 1;
+    // LEDCollector led;
+    // while(1)
+    // {
+    //     pid.pid();
+    //     led.pollLEDS(10);
+    //     bool front = led.wallInFront();
+    //     bool right = led.wallToRight();
 
-    /*while(1); //back up straight, until we give go ahead to PIDs
+    //     if(right)
+    //     {
+    //         pid.turnRightFromMoving();
+    //         pid.moveForwardOneCellNotMoving();
+    //     }
+    //     else if(front)
+    //     {
+    //         //continue
+    //     }
+    //     else
+    //     {
+    //         pid.turnAround(); //should continue forwards.
+    //     }
 
-    //this way the LED's get initialized properly
-    MazeRunner runner = MazeRunner();
-    MazeMapper mapper = MazeMapper();
-    
-    bool hasMapped = false;
 
-    while(!hasMapped) //do mapping mode until we decide otherwise
-    {
-        
-    }
-
-    //attach an interrrupt for a button to reset run (location reset to 0)
-    */
+    // }
 }
