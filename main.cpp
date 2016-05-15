@@ -114,7 +114,7 @@ int main()
     while(1)
     {
         pid.pid();
-        led.pollLEDS(10);
+        led.pollLEDs(10);
         bool front = led.wallInFront();
         bool left = led.wallToLeft();
         bool right = led.wallToRight();
@@ -171,7 +171,7 @@ int main()
     while(1)
     {
         pid.pid();
-        led.pollLEDS(10);
+        led.pollLEDs(10);
         bool front = led.wallInFront();
         bool left = led.wallToLeft();
 
@@ -202,7 +202,7 @@ int main()
     while(1)
     {
         pid.pid();
-        led.pollLEDS(10);
+        led.pollLEDs(10);
         bool front = led.wallInFront();
         bool right = led.wallToRight();
 
