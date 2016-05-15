@@ -48,17 +48,32 @@ int main()
     // Interrupt controller
     Ticker interrupt;
     
-//    interrupt.attach_us(&pid, &pidController::pid, 75000);
+    //interrupt.attach_us(&pid, &pidController::pid, 5000);
     
     while(mybutton);
 
     //Intialize final things
-    pid.start();
+    pid.start(); 
 
     while(1)
     {
-        //printf("hello i'm in the main loop");
-        pid.moveForward();
+        pid.pid();
+        IR_emitter1 = 1;
+        float val = 0;
+        for(int i = 0; i < 10; i++)
+        {
+            val += 1000*IR_receiver1.read();
+        }
+        val /= 10;
+        IR_emitter1 = 0;
+        
+        if(val < 90)
+        {
+            myled = 1;
+            pid.turnLeft();
+            myled = 0;
+        }
+        wait(0.005);
     }
 
     /*while(1); //back up straight, until we give go ahead to PIDs
