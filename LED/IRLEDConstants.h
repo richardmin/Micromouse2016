@@ -17,8 +17,13 @@ static float measured_right_back;
 const static int IR_FRONT_WALL = 250;
 
 // Default amount of time we're polling our IR LEDs
-const int LED_ON_TIME = 1000;
+const int LED_ON_TIME = 10;
 
 const int LED_HIST_SIZE = 50;
+
+const int WALL_IN_FRONT_LEFT = 880;
+const int WALL_IN_FRONT_RIGHT = 880;
+const int WALL_TO_LEFT = 450;
+const int WALL_TO_RIGHT = 425;
 
 #endif

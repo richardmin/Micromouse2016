@@ -29,7 +29,8 @@ class pidController {
         void turnLeft();
 
         void moveForwardOneCellNotMoving();
-        
+
+        void turnAround();
         void pause();        
         
         // Starts the PID Timer
