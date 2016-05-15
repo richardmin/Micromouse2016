@@ -195,6 +195,7 @@ int main()
     LEDCollector led;
     while(1)
     {
+//        printf("hello1");
         pid.pid();
         led.pollLEDs(10);
         bool front = led.wallInFront();
@@ -202,17 +203,29 @@ int main()
 
         if(!right)
         {
+            
+            myled=1;
+//            while(1);
+
+            printf("right");
             pid.turnRightFromMoving();
+            myled = 0;
+            printf("nom");
             pid.moveForwardOneCellNotMoving();
+            printf("asdofna");
         }
         else if(!front)
         {
+            printf("front");
             //continue
         }
         else
         {
+            printf("turnAround");
             pid.turnAround(); //should continue forwards.
         }
+        
+        printf("hello2\r\n");
 
 
     }

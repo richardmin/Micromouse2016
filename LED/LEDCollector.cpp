@@ -146,15 +146,18 @@ void LEDCollector::detectWallChanges()
 
 bool LEDCollector::wallInFront()
 {
+    printf("wall in front: %f %f\r\n", leftForwardLED, rightForwardLED);
     return (leftForwardLED >= WALL_IN_FRONT_LEFT || rightForwardLED >= WALL_IN_FRONT_RIGHT);
 }
 
 bool LEDCollector::wallToLeft()
 {
+    printf("wall in left: %f\r\n", leftBackLED);
     return (leftBackLED >= WALL_TO_LEFT);
 }
 
 bool LEDCollector::wallToRight()
 {
+    printf("wall in right: %f\r\n", rightBackLED);
     return (rightBackLED >= WALL_TO_RIGHT);
 }
