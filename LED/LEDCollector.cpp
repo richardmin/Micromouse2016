@@ -70,7 +70,7 @@ LEDCollector::LEDCollector()
 }
 
 
-void LEDCollector::pollLEDs(int milliseconds = LED_ON_TIME)
+void LEDCollector::pollLEDs(int milliseconds)
 {
     // Controller for IR receivers
     AnalogIn IR_left_back(IR_LEFT_BACK);
@@ -129,7 +129,7 @@ void LEDCollector::pollLEDs(int milliseconds = LED_ON_TIME)
     if(currHistPosition >= LED_HIST_SIZE)
         currHistPosition = 0;
     
-    detectWallChanges();
+    // detectWallChanges();
 }
 
 
@@ -142,4 +142,19 @@ void LEDCollector::detectWallChanges()
     //This method provides the small speed benefit of immediately knowing when the walls are changing patterns. 
     //However, it does take more memory
     
+}
+
+bool LEDCollector::wallInFront()
+{
+    return (leftForwardLED >= WALL_IN_FRONT_LEFT || rightForwardLED >= WALL_IN_FRONT_RIGHT);
+}
+
+bool LEDCollector::wallToLeft()
+{
+    return (leftBackLED >= WALL_TO_LEFT);
+}
+
+bool LEDCollector::wallToRight()
+{
+    return (rightBackLED >= WALL_TO_RIGHT);
 }

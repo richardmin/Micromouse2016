@@ -8,8 +8,28 @@
 #include "Gyro/Gyro.h"
 
 
+
 DigitalOut myled(LED1);
 DigitalIn mybutton(USER_BUTTON);
+
+//RNG from https://developer.mbed.org/questions/61158/Random-number-in-C/
+AnalogIn rng_read (RNG_SEED);
+ 
+unsigned int random_generator (void)
+{
+    unsigned int x = 0;
+    unsigned int iRandom = 0;
+    
+    
+    
+    for (x = 0; x <= 32; x += 2)
+    {
+        iRandom += ((rng_read.read_u16() % 3) << x);
+        wait_us (10);
+    }
+    
+    return iRandom;
+}
 
 
 int main()  
@@ -82,12 +102,63 @@ int main()
     }
 
 
-    /*
+    
+
+
+    //RANDOM MODE
+    IR_emitter1 = 1;
+    IR_emitter2 = 1;
+    IR_emitter3 = 1;
+    IR_emitter4 = 1;
+    LEDCollector led;
     while(1)
     {
-    
+        pid.pid();
+        led.pollLEDS(10);
+        bool front = led.wallInFront();
+        bool right = led.wallToLeft();
+        bool left = led.wallToRight();
+        int arr[3] = {0, 0, 0};
+        int index = 0;
+
+
+        //I AIN'T NO CS MAJOR
+        if(front)
+            arr[index++] = 1;
+        if(right)
+            arr[index++] = 2;
+        if(left)
+            arr[index++] = 3;
+
+        if(index == 0) //dunno how you got here but that means you have a dead end
+        {
+            pid.turnAround();
+            continue;
+        }
+
+        int rng = random_generator();
+
+        //pick the random function
+        int funcNum = rng % index;
+        switch(arr[funcNum])
+        {
+            case 1:
+            pid.moveForwardOneCell();
+            continue; //pid continues forward.
+            break;
+            case 2:
+            pid.turnRightFromMoving();
+            continue;
+            break;
+            case 3:
+            pid.turnLeftFromMoving();
+            continue;
+            break;
+        }
+
+
     }
-    */
+    
 
     /*while(1); //back up straight, until we give go ahead to PIDs
 

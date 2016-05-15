@@ -25,6 +25,7 @@
 #define IR_LEFT_FRONT A1
 #define IR_RIGHT_FRONT A2
 #define IR_RIGHT_BACK A3
+#define RNG_SEED A4
 
 // Power controller for the IR's
 #define IR_LEFT_BACK_PWR D1
