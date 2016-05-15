@@ -2,7 +2,6 @@
 #include "AVEncoder.h"
 #include "PINS/pinouts.h"
 #include "MazeMapper/Maze.h"
-#include "MazeMapper/Location.h"
 #include "LED/LEDCollector.h"
 #include "PID/pidController.h"
 #include "PID/pidConstants.h"
@@ -70,7 +69,12 @@ int main()
         if(val < 90)
         {
             myled = 1;
+            pid.turnLeftFromMoving();
+            pid.moveForwardOneCellNotMoving();
             pid.turnLeft();
+            pid.moveForwardOneCellNotMoving();
+            while(1);
+
             myled = 0;
         }
         wait(0.005);

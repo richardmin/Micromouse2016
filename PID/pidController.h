@@ -24,7 +24,12 @@ class pidController {
 
         // Functions to control turning
         void turnRight();
+
+        void turnLeftFromMoving();
         void turnLeft();
+
+        void moveForwardOneCellNotMoving();
+        
         
         // Starts the PID Timer
         void start();

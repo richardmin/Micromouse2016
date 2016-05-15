@@ -307,13 +307,12 @@ void pidController::stop()
     setRightPwm(STOP);
 }
 
-void pidController::turnLeft()
+void pidController::turnLeftFromMoving()
 {
     LeftEncoder->reset();
     RightEncoder->reset();
-    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < 572)
+    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < 590)
         ;
-    
     // TODO: turning should be curved
     turning = true;
     
@@ -329,12 +328,20 @@ void pidController::turnLeft()
         LeftEncoder->reset();
         RightEncoder->reset();
         
-//        wait(.01);
         if( leftPulses == 0 && rightPulses == 0)
             i++;
         else
             i = 0;
     }
+
+    //Now the mouse should have stopped appropriately.
+    turnLeft();
+}
+
+void pidController::turnLeft()
+{
+    turning = true;
+   
     setRightPwm(.15);
     setLeftPwm(-.15);
     
@@ -352,18 +359,20 @@ void pidController::turnLeft()
     }
         
     stop();
+}
+
+void pidController::moveForwardOneCellNotMoving()
+{
     turning = false;
     setLeftPwm(leftSpeed);
     setRightPwm(rightSpeed);
     
     LeftEncoder->reset();
     RightEncoder->reset();
-    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < 372)
+    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < 380)
         ;
-        
-    stop();
-    while(1);
 }
+        
 
 void pidController::turnRight()
 {
