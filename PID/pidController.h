@@ -23,10 +23,10 @@ class pidController {
         void stop();
 
         // Functions to control turning
-        void turnRight();
-
         void turnLeftFromMoving();
+        void turnRightFromMoving();
         void turnLeft();
+        void turnRight();
 
         void moveForwardOneCellNotMoving();
 
