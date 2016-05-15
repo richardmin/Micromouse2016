@@ -53,11 +53,26 @@ int main()
     while(mybutton);
 
     //Intialize final things
-    pid.start();
+    pid.start(); 
 
     while(1)
     {
         pid.pid();
+        IR_emitter1 = 1;
+        float val = 0;
+        for(int i = 0; i < 10; i++)
+        {
+            val += 1000*IR_receiver1.read();
+        }
+        val /= 10;
+        IR_emitter1 = 0;
+        
+        if(val < 90)
+        {
+            myled = 1;
+            pid.turnLeft();
+            myled = 0;
+        }
         wait(0.005);
     }
 
