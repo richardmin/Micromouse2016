@@ -375,43 +375,57 @@ void pidController::moveForwardOneCellNotMoving()
     setRightPwm(rightSpeed);
     
     LeftEncoder->reset();
-    RightEncoder->reset();
-    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < 380)
+    RightEncoder->reset();=
+    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < 590)
         ;
 }
         
-
-void pidController::turnRight()
+void pidController::turnRightFromMoving()
 {
+    LeftEncoder->reset();
+    RightEncoder->reset();
+    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < 590)
+        ;
     // TODO: turning should be curved
     turning = true;
     
-    *LMotorForward = 1;
-    *LMotorReverse = 1;
-    *RMotorForward = 1;
-    *RMotorReverse = 1;
+    stop();
     
     int i = 0;
-    while(LeftEncoder->getPulses() != 0 &&  RightEncoder->getPulses() != 0)
+    
+    int leftPulses, rightPulses;
+    while(i < 50)
     {
-        ////////////printf("Looped: %d\r\n", i);
+        leftPulses = LeftEncoder->getPulses();
+        rightPulses = RightEncoder->getPulses();
         LeftEncoder->reset();
         RightEncoder->reset();
         
-        wait(.01);
-        i++;
+        if( leftPulses == 0 && rightPulses == 0)
+            i++;
+        else
+            i = 0;
     }
+
+    //Now the mouse should have stopped appropriately.
+    turnRight();
+}
+
+void pidController::turnRight()
+{
+    turning = true;
     
+    LeftEncoder->reset();
+    RightEncoder->reset();
+   
     setRightPwm(-.15);
     setLeftPwm(.15);
     
     while(LeftEncoder->getPulses() < LEFT_TURN_ENCODER_COUNT ||  RightEncoder->getPulses() < LEFT_TURN_ENCODER_COUNT)
     {
-        ////////////printf(" Left Encoder: %d Right Encoder: %d \r\n", LeftEncoder->getPulses(), RightEncoder->getPulses());
-        
         if(LeftEncoder->getPulses() >= LEFT_TURN_ENCODER_COUNT)
         {
-            setLeftPwm(0.0);    
+            setLeftPwm(0.0);
         }
         
         if(RightEncoder->getPulses() >= LEFT_TURN_ENCODER_COUNT)
@@ -419,14 +433,11 @@ void pidController::turnRight()
             setRightPwm(0.0);    
         }
     }
-    
+        
     stop();
+    setRightPwm(0);
+    setLeftPwm(0);
     
-    LeftEncoder->reset();
-    RightEncoder->reset();
-    
-    //setLeftPwm(leftSpeed);
-    //setRightPwm(rightSpeed);
     turning = false;
 }
 
@@ -476,4 +487,11 @@ void pidController::moveForward()
     {
         turnLeft();
     }
+}
+
+void pidController::pause()
+{
+    turning = true;
+    setLeftPwm(0);
+    setRightPwm(0);
 }
