@@ -311,7 +311,7 @@ void pidController::turnLeftFromMoving()
 {
     LeftEncoder->reset();
     RightEncoder->reset();
-    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < 590)
+    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < 420)
         ;
     // TODO: turning should be curved
     turning = true;
@@ -348,22 +348,10 @@ void pidController::turnLeft()
     setRightPwm(.15);
     setLeftPwm(-.15);
     
-    while(LeftEncoder->getPulses() < LEFT_TURN_ENCODER_COUNT ||  RightEncoder->getPulses() < LEFT_TURN_ENCODER_COUNT)
-    {
-        if(LeftEncoder->getPulses() >= LEFT_TURN_ENCODER_COUNT)
-        {
-            setLeftPwm(0.0);
-        }
-        
-        if(RightEncoder->getPulses() >= LEFT_TURN_ENCODER_COUNT)
-        {
-            setRightPwm(0.0);    
-        }
-    }
+    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < LEFT_TURN_ENCODER_COUNT)
+        ;
         
     stop();
-    setRightPwm(0);
-    setLeftPwm(0);
     
     turning = false;
 }
@@ -376,7 +364,7 @@ void pidController::moveForwardOneCellNotMoving()
     
     LeftEncoder->reset();
     RightEncoder->reset();
-    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < 380)
+    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < 590)
         ;
 }
         
@@ -407,7 +395,7 @@ void pidController::turnRight()
     
     while(LeftEncoder->getPulses() < LEFT_TURN_ENCODER_COUNT ||  RightEncoder->getPulses() < LEFT_TURN_ENCODER_COUNT)
     {
-        ////////////printf(" Left Encoder: %d Right Encoder: %d \r\n", LeftEncoder->getPulses(), RightEncoder->getPulses());
+        //printf(" Left Encoder: %d Right Encoder: %d \r\n", LeftEncoder->getPulses(), RightEncoder->getPulses());
         
         if(LeftEncoder->getPulses() >= LEFT_TURN_ENCODER_COUNT)
         {
@@ -524,4 +512,11 @@ void pidController::turnAround()
     setLeftPwm(0);
     
     turning = false;
+}
+
+void pidController::pause()
+{
+    turning = true;
+    setLeftPwm(0);
+    setRightPwm(0);
 }
