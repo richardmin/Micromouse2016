@@ -398,8 +398,8 @@ void pidController::moveForward()
 {
     int front_left_LED = 0, front_right_LED = 0, back_left_LED = 0, back_right_LED = 0;
 
-    setLeftPwm(DEFAULT_FORWARD_SPEED);
-    setRightPwm(DEFAULT_FORWARD_SPEED);
+    // setLeftPwm(DEFAULT_FORWARD_SPEED);
+    // setRightPwm(DEFAULT_FORWARD_SPEED);
     
     *IR_out_left_front = 1;
     for(int i = 0; i < 10; i++)
@@ -442,7 +442,7 @@ void pidController::moveForward()
 //        printf("RIGHT WALL\r\n");
     if(front_left_LED > IR_FRONT_WALL || front_right_LED > IR_FRONT_WALL)
     {
-        printf("TURNING LEFT\r\n");
+        // printf("TURNING LEFT\r\n");
         turnLeft();
     }
 }
