@@ -18,6 +18,7 @@ static int IDEAL_TRANSLATIONAL_SPEED = 500; // In mm/s
 
 static int LEFT_TURN_ENCODER_COUNT = 280;
 static int RIGHT_TURN_ENCODER_COUNT = 320;
+static int TURN_AROUND_ENCODER_COUNT = 560;
 
 const static int LEFT_IR_WALL = 170;
 const static int RIGHT_IR_WALL = 350;

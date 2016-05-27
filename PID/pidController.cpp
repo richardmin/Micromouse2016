@@ -224,6 +224,60 @@ void pidController::stop()
     setRightPwm(STOP);
 }
 
+void pidController::turnLeft()
+{
+    turning = true;
+    
+    LeftEncoder->reset();
+    RightEncoder->reset();
+   
+    setRightPwm(.15);
+    setLeftPwm(-.15);
+    
+    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < LEFT_TURN_ENCODER_COUNT)
+        ;
+        
+    stop();
+    
+    turning = false;
+}
+
+void pidController::turnRight()
+{
+    turning = true;
+    
+    LeftEncoder->reset();
+    RightEncoder->reset();
+   
+    setRightPwm(-.15);
+    setLeftPwm(.15);
+    
+    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < RIGHT_TURN_ENCODER_COUNT)
+        ;
+        
+    stop();
+    
+    turning = false;
+}
+
+void pidController::turnAround()
+{
+    turning = true;
+
+    LeftEncoder->reset();
+    RightEncoder->reset();
+   
+    setRightPwm(.15);
+    setLeftPwm(-.15);
+    
+    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < TURN_AROUND_ENCODER_COUNT)
+        ;
+        
+    stop();
+    
+    turning = false;
+}
+
 void pidController::turnLeftFromMoving()
 {
     LeftEncoder->reset();
@@ -253,24 +307,6 @@ void pidController::turnLeftFromMoving()
 
     //Now the mouse should have stopped appropriately.
     turnLeft();
-}
-
-void pidController::turnLeft()
-{
-    turning = true;
-    
-    LeftEncoder->reset();
-    RightEncoder->reset();
-   
-    setRightPwm(.15);
-    setLeftPwm(-.15);
-    
-    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < LEFT_TURN_ENCODER_COUNT)
-        ;
-        
-    stop();
-    
-    turning = false;
 }
 
 void pidController::moveForwardOneCellNotMoving()
@@ -316,24 +352,6 @@ void pidController::turnRightFromMoving()
     turnRight();
 }
 
-void pidController::turnRight()
-{
-    turning = true;
-    
-    LeftEncoder->reset();
-    RightEncoder->reset();
-   
-    setRightPwm(-.15);
-    setLeftPwm(.15);
-    
-    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < RIGHT_TURN_ENCODER_COUNT)
-        ;
-        
-    stop();
-    
-    turning = false;
-}
-
 void pidController::moveForward() 
 {
     int front_left_LED = 0, front_right_LED = 0, back_left_LED = 0, back_right_LED = 0;
@@ -375,54 +393,6 @@ void pidController::moveForward()
     {
         turnLeft();
     }
-}
-
-void pidController::turnAround()
-{
-    turning = true;
-    
-    int i = 0;
-    
-
-    //force it to stop.
-    int leftPulses, rightPulses;
-    while(i < 50)
-    {
-        leftPulses = LeftEncoder->getPulses();
-        rightPulses = RightEncoder->getPulses();
-        LeftEncoder->reset();
-        RightEncoder->reset();
-        
-        if( leftPulses == 0 && rightPulses == 0)
-            i++;
-        else
-            i = 0;
-    }
-
-    LeftEncoder->reset();
-    RightEncoder->reset();
-   
-    setRightPwm(.15);
-    setLeftPwm(-.15);
-    
-    while(LeftEncoder->getPulses() < 2*LEFT_TURN_ENCODER_COUNT ||  RightEncoder->getPulses() < 2*LEFT_TURN_ENCODER_COUNT)
-    {
-        if(LeftEncoder->getPulses() >= LEFT_TURN_ENCODER_COUNT)
-        {
-            setLeftPwm(0.0);
-        }
-        
-        if(RightEncoder->getPulses() >= LEFT_TURN_ENCODER_COUNT)
-        {
-            setRightPwm(0.0);    
-        }
-    }
-        
-    stop();
-    setRightPwm(0);
-    setLeftPwm(0);
-    
-    turning = false;
 }
 
 void pidController::pause()
