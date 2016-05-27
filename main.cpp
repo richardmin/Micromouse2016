@@ -309,19 +309,20 @@ int main()
         ;
         
     wait(1.0);
-
-    pid.start();
     
-    // // Move one cell forward
-    // pid.moveForwardOneCell();
-        
-    // // Turn PID off
-    // pid.pause();
-    
-    // myled = 1;
-
-    while(1)
+    for(int i = 0; i < 4; i++)
     {
-        myled = 1;
+
+        pid.start();
+        
+        // Move one cell forward
+        pid.moveForwardOneCell();
+            
+        // Turn PID off
+        pid.pause();
+        
+        wait(1.0);
     }
+    
+    myled = 1;
 }
