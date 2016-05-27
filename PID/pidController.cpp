@@ -96,16 +96,16 @@ void pidController::pid()
     if(left_IR > LEFT_IR_WALL)
     {
         //Calculate IR error based on left IR
-        IR_correction_left = P_controller_IR(left_IR_error) + 
+        IR_correction_left = P_controller_IR(left_IR_error);// + 
                      //I_controller_IR(left_IR_error, IRIntegrator, dt) + 
-                     D_controller_IR(left_IR_error, prevIRError, dt);
+                     //D_controller_IR(left_IR_error, prevIRError, dt);
     }
     else if(right_IR > RIGHT_IR_WALL)
     {
         //Calculate IR error based on right IR
-        IR_correction_right = P_controller_IR(right_IR_error) + 
+        IR_correction_right = P_controller_IR(right_IR_error);// + 
                      //I_controller_IR(right_IR_error, IRIntegrator, dt) + 
-                     D_controller_IR(right_IR_error, prevIRError, dt);
+                     //D_controller_IR(right_IR_error, prevIRError, dt);
         IR_correction_right = -IR_correction_right;
     }
     
@@ -318,50 +318,19 @@ void pidController::turnRightFromMoving()
 
 void pidController::turnRight()
 {
-    // TODO: turning should be curved
     turning = true;
-    
-    *LMotorForward = 1;
-    *LMotorReverse = 1;
-    *RMotorForward = 1;
-    *RMotorReverse = 1;
-    
-    int i = 0;
-    while(LeftEncoder->getPulses() != 0 &&  RightEncoder->getPulses() != 0)
-    {
-        ////////////printf("Looped: %d\r\n", i);
-        LeftEncoder->reset();
-        RightEncoder->reset();
-        
-        wait(.01);
-        i++;
-    }
-    
-    setRightPwm(-.15);
-    setLeftPwm(.15);
-    
-    while(LeftEncoder->getPulses() < LEFT_TURN_ENCODER_COUNT ||  RightEncoder->getPulses() < LEFT_TURN_ENCODER_COUNT)
-    {
-        //printf(" Left Encoder: %d Right Encoder: %d \r\n", LeftEncoder->getPulses(), RightEncoder->getPulses());
-        
-        if(LeftEncoder->getPulses() >= LEFT_TURN_ENCODER_COUNT)
-        {
-            setLeftPwm(0.0);    
-        }
-        
-        if(RightEncoder->getPulses() >= LEFT_TURN_ENCODER_COUNT)
-        {
-            setRightPwm(0.0);    
-        }
-    }
-    
-    stop();
     
     LeftEncoder->reset();
     RightEncoder->reset();
+   
+    setRightPwm(-.15);
+    setLeftPwm(.15);
     
-    //setLeftPwm(leftSpeed);
-    //setRightPwm(rightSpeed);
+    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < RIGHT_TURN_ENCODER_COUNT)
+        ;
+        
+    stop();
+    
     turning = false;
 }
 
@@ -402,11 +371,6 @@ void pidController::moveForward()
 
     turning = false;
 
-//    if(back_left_LED > 70)
-//        //////////printf("LEFT WALL %d\r\n", back_left_LED);
-//
-//    if(back_right_LED > 350)
-//        //////////printf("RIGHT WALL\r\n");
     if(front_left_LED > IR_FRONT_WALL || front_right_LED > IR_FRONT_WALL)
     {
         turnLeft();

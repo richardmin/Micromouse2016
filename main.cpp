@@ -114,19 +114,16 @@ void detectWallChanges()
 
 bool wallInFront()
 {
-    printf("wall in front: %f %f\r\n", leftForwardLED, rightForwardLED);
     return (leftForwardLED >= WALL_IN_FRONT_LEFT || rightForwardLED >= WALL_IN_FRONT_RIGHT);
 }
 
 bool wallToLeft()
 {
-    printf("wall in left: %f\r\n", leftBackLED);
     return (leftBackLED >= WALL_TO_LEFT);
 }
 
 bool wallToRight()
 {
-    printf("wall in right: %f\t%d\r\n", rightBackLED, WALL_TO_RIGHT);
     return (rightBackLED >= WALL_TO_RIGHT);
 }
 
@@ -214,7 +211,6 @@ void FourIRRandom(pidController pid)
 
         if(index == 0) // dunno how you got here but that means you have a dead end
         {
-            printf("TURN AROUND\r\n");
             pid.turnAround();
             continue;
         }
@@ -224,15 +220,12 @@ void FourIRRandom(pidController pid)
         switch(arr[funcNum])
         {
             case 1:
-                printf("STRAIGHT\r\n");
                 break;
             case 2:
-                printf("RIGHT\r\n");
                 pid.turnRightFromMoving();
                 pid.moveForwardOneCellNotMoving();
                 break;
             case 3:
-                printf("LEFT\r\n");
                 pid.turnLeftFromMoving();
                 pid.moveForwardOneCellNotMoving();
                 break;
@@ -288,18 +281,18 @@ void TwoIRRandom(pidController pid)
  
 int main()  
 {           
-    uint32_t seed =0;
-    const int loops = 1; // increase if LSB has a bias. 
-     
-    for (int i=0;i<(32*loops);i++) {
-      seed ^= rng_read.read_u16();
-      if (seed & 1<31) { // shift left and wrap.
-        seed <<= 1;
-        seed |= 1;
-      } else
-        seed <<= 1;
-    }
-    srand(seed);
+//    uint32_t seed =0;
+//    const int loops = 1; // increase if LSB has a bias. 
+//     
+//    for (int i=0;i<(32*loops);i++) {
+//      seed ^= rng_read.read_u16();
+//      if (seed & 1<31) { // shift left and wrap.
+//        seed <<= 1;
+//        seed |= 1;
+//      } else
+//        seed <<= 1;
+//    }
+//    srand(seed);
 
     // PID controller
     pidController pid = pidController(&LeftEncoder, &RightEncoder,
@@ -310,16 +303,18 @@ int main()
     // Interrupt controller
     Ticker interrupt;
     
-    interrupt.attach_us(&pid, &pidController::pid, 5000);
+    //interrupt.attach_us(&pid, &pidController::pid, 5000);
     
     while(mybutton)
         ;
 
     //Intialize final things
-    pid.start(); 
+    // pid.start(); 
+    
+    pid.turnLeft();
 
     while(1)
     {
-        ;
+        myled = 1;
     }
 }
