@@ -222,6 +222,13 @@ void pidController::stop()
 {
     setLeftPwm(STOP);
     setRightPwm(STOP);
+    
+    while(LeftEncoder->read( > 0 || RightEncoder->read > 0))
+    {
+        LeftEncoder->reset();
+        RightEncoder->reset();
+        wait(0.01);
+    }
 }
 
 void pidController::turnLeft()
@@ -352,7 +359,7 @@ void pidController::turnRightFromMoving()
     turnRight();
 }
 
-void pidController::moveForward() 
+void pidController::moveForward()
 {
     int front_left_LED = 0, front_right_LED = 0, back_left_LED = 0, back_right_LED = 0;
     *IR_out_left_front = 1;
