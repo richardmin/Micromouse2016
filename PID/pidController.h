@@ -20,27 +20,25 @@ class pidController {
 
         // Sets both motors to zero
         void stop();
+        
+        // Turns PID off
+        void pause();  
 
         // Functions to control turning
-        void turnLeftFromMoving();
-        void turnRightFromMoving();
         void turnLeft();
         void turnRight();
-
-        void moveForwardOneCell();
-        void realign();
-
-        void moveForwardOneCellNotMoving();
-
         void turnAround();
-        void pause();        
+
+        // Moves forward exactly one cell
+        void moveForwardOneCell();
+        
+        // Attempts to straighten the mouse
+        void realign();
         
         // Starts the PID Timer
         void start();
         
-         void moveForward();
-         
-                 // Helper functions to drive the wires connected to the motors
+        // Helper functions to drive the wires connected to the motors
         void setRightPwm(double speed); 
         void setLeftPwm(double speed);
         
@@ -96,6 +94,7 @@ class pidController {
         // Interrupt controller variables
         Timer timer;
         
+        // Determines if we are currently running PID
         bool running;
 };
 

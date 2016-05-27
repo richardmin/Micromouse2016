@@ -51,233 +51,233 @@ PwmOut RMotorForward(R_MOTOR_FORWARD);
 PwmOut LMotorForward(L_MOTOR_FORWARD);
 PwmOut LMotorReverse(L_MOTOR_REVERSE);
 
-int currHistPosition;
+// int currHistPosition;
 
-void pollLEDs(int milliseconds)
-{
-    leftForwardLED = 0;
-    rightForwardLED = 0;
-    leftBackLED = 0;
-    rightBackLED = 0;
+// void pollLEDs(int milliseconds)
+// {
+//     leftForwardLED = 0;
+//     rightForwardLED = 0;
+//     leftBackLED = 0;
+//     rightBackLED = 0;
 
-    IR_emitter2 = 1;
-    for(int i = 0; i < milliseconds; i++)
-    {
-        leftForwardLED += IR_receiver2.read()*1000;
-    }
-    leftForwardLED /= milliseconds;
+//     IR_emitter2 = 1;
+//     for(int i = 0; i < milliseconds; i++)
+//     {
+//         leftForwardLED += IR_receiver2.read()*1000;
+//     }
+//     leftForwardLED /= milliseconds;
 
-    IR_emitter3 = 1;
-    for(int i = 0; i < milliseconds; i++)
-    {
-        rightForwardLED += IR_receiver3.read()*1000;
-    }
-    rightForwardLED /= milliseconds;
+//     IR_emitter3 = 1;
+//     for(int i = 0; i < milliseconds; i++)
+//     {
+//         rightForwardLED += IR_receiver3.read()*1000;
+//     }
+//     rightForwardLED /= milliseconds;
 
-    IR_emitter1 = 1;
-    for(int i = 0; i < milliseconds; i++)
-    {
-        leftBackLED += IR_receiver1.read()*1000;
-    }
-    leftBackLED /= milliseconds;
+//     IR_emitter1 = 1;
+//     for(int i = 0; i < milliseconds; i++)
+//     {
+//         leftBackLED += IR_receiver1.read()*1000;
+//     }
+//     leftBackLED /= milliseconds;
 
-    IR_emitter4 = 1;
-    for(int i = 0; i < milliseconds; i++)
-    {
-        rightBackLED += IR_receiver4.read()*1000;
-    }
-    rightBackLED /= milliseconds;
+//     IR_emitter4 = 1;
+//     for(int i = 0; i < milliseconds; i++)
+//     {
+//         rightBackLED += IR_receiver4.read()*1000;
+//     }
+//     rightBackLED /= milliseconds;
     
-    leftForwardLEDHistory[currHistPosition] = leftForwardLED;
-    leftBackLEDHistory[currHistPosition] = leftBackLED;
-    rightForwardLEDHistory[currHistPosition] = rightForwardLED;
-    rightBackLEDHistory[currHistPosition] = rightBackLED;
+//     leftForwardLEDHistory[currHistPosition] = leftForwardLED;
+//     leftBackLEDHistory[currHistPosition] = leftBackLED;
+//     rightForwardLEDHistory[currHistPosition] = rightForwardLED;
+//     rightBackLEDHistory[currHistPosition] = rightBackLED;
 
-    currHistPosition++;
+//     currHistPosition++;
 
-    if(currHistPosition >= LED_HIST_SIZE)
-        currHistPosition = 0;
+//     if(currHistPosition >= LED_HIST_SIZE)
+//         currHistPosition = 0;
     
-    // detectWallChanges();
-}
+//     // detectWallChanges();
+// }
 
-void detectWallChanges()
-{
-    //analyze the LED History, seeing if the walls are changing.
-    //This is one way of formatively creating the walls of the maze; the other way would be to monitor our location
-    //and check if there's a wall each time we enter another square.
-    //In fact it's probably simpler to implement it that way.
-    //This method provides the small speed benefit of immediately knowing when the walls are changing patterns. 
-    //However, it does take more memory
+// void detectWallChanges()
+// {
+//     //analyze the LED History, seeing if the walls are changing.
+//     //This is one way of formatively creating the walls of the maze; the other way would be to monitor our location
+//     //and check if there's a wall each time we enter another square.
+//     //In fact it's probably simpler to implement it that way.
+//     //This method provides the small speed benefit of immediately knowing when the walls are changing patterns. 
+//     //However, it does take more memory
     
-}
+// }
 
-bool wallInFront()
-{
-    return (leftForwardLED >= WALL_IN_FRONT_LEFT || rightForwardLED >= WALL_IN_FRONT_RIGHT);
-}
+// bool wallInFront()
+// {
+//     return (leftForwardLED >= WALL_IN_FRONT_LEFT || rightForwardLED >= WALL_IN_FRONT_RIGHT);
+// }
 
-bool wallToLeft()
-{
-    return (leftBackLED >= WALL_TO_LEFT);
-}
+// bool wallToLeft()
+// {
+//     return (leftBackLED >= WALL_TO_LEFT);
+// }
 
-bool wallToRight()
-{
-    return (rightBackLED >= WALL_TO_RIGHT);
-}
+// bool wallToRight()
+// {
+//     return (rightBackLED >= WALL_TO_RIGHT);
+// }
 
-void rightWallFollower(pidController pid)
-{
-    IR_emitter1 = 1;
-    IR_emitter2 = 1;
-    IR_emitter3 = 1;
-    IR_emitter4 = 1;
-    while(1)
-    {
-        pid.pid();
-        pollLEDs(10);
-        bool front = wallInFront();
-        bool right = wallToRight();
+// void rightWallFollower(pidController pid)
+// {
+//     IR_emitter1 = 1;
+//     IR_emitter2 = 1;
+//     IR_emitter3 = 1;
+//     IR_emitter4 = 1;
+//     while(1)
+//     {
+//         pid.pid();
+//         pollLEDs(10);
+//         bool front = wallInFront();
+//         bool right = wallToRight();
 
-        if(right)
-        {
-            pid.turnRightFromMoving();
-            pid.moveForwardOneCellNotMoving();
-        }
-        else if(!front)
-        {
-            //continue
-        }
-        else
-        {
-            pid.turnAround(); //should continue forwards.
-        }
-    }
-}
+//         if(right)
+//         {
+//             pid.turnRightFromMoving();
+//             pid.moveForwardOneCellNotMoving();
+//         }
+//         else if(!front)
+//         {
+//             //continue
+//         }
+//         else
+//         {
+//             pid.turnAround(); //should continue forwards.
+//         }
+//     }
+// }
 
-void leftWallFollower(pidController pid)
-{
-    IR_emitter1 = 1;
-    IR_emitter2 = 1;
-    IR_emitter3 = 1;
-    IR_emitter4 = 1;
-    while(1)
-    {
-        pid.pid();
-        pollLEDs(10);
-        bool front = wallInFront();
-        bool left = wallToLeft();
+// void leftWallFollower(pidController pid)
+// {
+//     IR_emitter1 = 1;
+//     IR_emitter2 = 1;
+//     IR_emitter3 = 1;
+//     IR_emitter4 = 1;
+//     while(1)
+//     {
+//         pid.pid();
+//         pollLEDs(10);
+//         bool front = wallInFront();
+//         bool left = wallToLeft();
 
-        if(left)
-        {
-            pid.turnLeftFromMoving();
-            pid.moveForwardOneCellNotMoving();
-        }
-        else if(!front)
-        {
-            //continue
-        }
-        else
-        {
-            pid.turnAround();
-        }
-    }
-}
+//         if(left)
+//         {
+//             pid.turnLeftFromMoving();
+//             pid.moveForwardOneCellNotMoving();
+//         }
+//         else if(!front)
+//         {
+//             //continue
+//         }
+//         else
+//         {
+//             pid.turnAround();
+//         }
+//     }
+// }
 
-void FourIRRandom(pidController pid)
-{
-    IR_emitter1 = 1;
-    IR_emitter2 = 1;
-    IR_emitter3 = 1;
-    IR_emitter4 = 1;
-    while(1)
-    {
-        pid.pid();
-        pollLEDs(10);
-        bool front = wallInFront();
-        bool left = wallToLeft();
-        bool right = wallToRight();
-        int arr[3] = {0, 0, 0};
-        int index = 0;
+// void FourIRRandom(pidController pid)
+// {
+//     IR_emitter1 = 1;
+//     IR_emitter2 = 1;
+//     IR_emitter3 = 1;
+//     IR_emitter4 = 1;
+//     while(1)
+//     {
+//         pid.pid();
+//         pollLEDs(10);
+//         bool front = wallInFront();
+//         bool left = wallToLeft();
+//         bool right = wallToRight();
+//         int arr[3] = {0, 0, 0};
+//         int index = 0;
 
-        // I AIN'T NO CS MAJOR
-        if(!front)
-            arr[index++] = 1;
-        if(!right)
-            arr[index++] = 2;
-        if(!left)
-            arr[index++] = 3;
+//         // I AIN'T NO CS MAJOR
+//         if(!front)
+//             arr[index++] = 1;
+//         if(!right)
+//             arr[index++] = 2;
+//         if(!left)
+//             arr[index++] = 3;
 
-        if(index == 0) // dunno how you got here but that means you have a dead end
-        {
-            pid.turnAround();
-            continue;
-        }
+//         if(index == 0) // dunno how you got here but that means you have a dead end
+//         {
+//             pid.turnAround();
+//             continue;
+//         }
 
-        //pick the random function
-        int funcNum = rand() % index;
-        switch(arr[funcNum])
-        {
-            case 1:
-                break;
-            case 2:
-                pid.turnRightFromMoving();
-                pid.moveForwardOneCellNotMoving();
-                break;
-            case 3:
-                pid.turnLeftFromMoving();
-                pid.moveForwardOneCellNotMoving();
-                break;
-        }
+//         //pick the random function
+//         int funcNum = rand() % index;
+//         switch(arr[funcNum])
+//         {
+//             case 1:
+//                 break;
+//             case 2:
+//                 pid.turnRightFromMoving();
+//                 pid.moveForwardOneCellNotMoving();
+//                 break;
+//             case 3:
+//                 pid.turnLeftFromMoving();
+//                 pid.moveForwardOneCellNotMoving();
+//                 break;
+//         }
 
 
-    }
-}
+//     }
+// }
 
-void TwoIRRandom(pidController pid)
-{
-    IR_emitter2 = 1;
-    IR_emitter3 = 1;
-    while(1)
-    {
-        pollLEDs(10);
-        int i = 0;
-        int j;
-        while(!wallInFront())
-        {
-            i++;
-            pollLEDs(10);
-            pid.moveForwardOneCellNotMoving();
-            if(i > 1000)
-            {
-                for(j = 0; j < 500; j++)
-                {
-                    pid.setLeftPwm(-0.1);
-                    pid.setRightPwm(-0.12);
-                }
-                i = 0;
-            }
-        }
+// void TwoIRRandom(pidController pid)
+// {
+//     IR_emitter2 = 1;
+//     IR_emitter3 = 1;
+//     while(1)
+//     {
+//         pollLEDs(10);
+//         int i = 0;
+//         int j;
+//         while(!wallInFront())
+//         {
+//             i++;
+//             pollLEDs(10);
+//             pid.moveForwardOneCellNotMoving();
+//             if(i > 1000)
+//             {
+//                 for(j = 0; j < 500; j++)
+//                 {
+//                     pid.setLeftPwm(-0.1);
+//                     pid.setRightPwm(-0.12);
+//                 }
+//                 i = 0;
+//             }
+//         }
         
-        while(IR_receiver2.read()*1000 > 920 || IR_receiver3.read()*1000 > 920)
-        {
-            pid.setLeftPwm(-0.1);
-            pid.setRightPwm(-0.12);
-        }
-        pid.stop();
+//         while(IR_receiver2.read()*1000 > 920 || IR_receiver3.read()*1000 > 920)
+//         {
+//             pid.setLeftPwm(-0.1);
+//             pid.setRightPwm(-0.12);
+//         }
+//         pid.stop();
         
-        switch(rand()%2)
-        {
-            case 0:
-                pid.turnRight();
-                break;
-            case 1:
-                pid.turnLeft();
-                break;
-        }
-    }
-}
+//         switch(rand()%2)
+//         {
+//             case 0:
+//                 pid.turnRight();
+//                 break;
+//             case 1:
+//                 pid.turnLeft();
+//                 break;
+//         }
+//     }
+// }
  
 int main()  
 {           

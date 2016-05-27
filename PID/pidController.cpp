@@ -223,18 +223,6 @@ void pidController::stop()
     }
 }
 
-void pidController::moveForwardOneCellNotMoving()
-{
-    turning = false;
-    setLeftPwm(leftSpeed);
-    setRightPwm(rightSpeed);
-    
-    LeftEncoder->reset();
-    RightEncoder->reset();
-    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < 590)
-        ;
-}
-
 void pidController::turnLeft()
 {
     turning = true;
@@ -384,111 +372,6 @@ void pidController::realign()
     }
     
     stop();
-}
-
-void pidController::turnLeftFromMoving()
-{
-    LeftEncoder->reset();
-    RightEncoder->reset();
-    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < 420)
-        ;
-    // TODO: turning should be curved
-    turning = true;
-    
-    stop();
-    
-    int i = 0;
-    
-    int leftPulses, rightPulses;
-    while(i < 50)
-    {
-        leftPulses = LeftEncoder->getPulses();
-        rightPulses = RightEncoder->getPulses();
-        LeftEncoder->reset();
-        RightEncoder->reset();
-        
-        if( leftPulses == 0 && rightPulses == 0)
-            i++;
-        else
-            i = 0;
-    }
-
-    //Now the mouse should have stopped appropriately.
-    turnLeft();
-}
-        
-void pidController::turnRightFromMoving()
-{
-    LeftEncoder->reset();
-    RightEncoder->reset();
-    while((LeftEncoder->getPulses() + RightEncoder->getPulses())/2 < 420)
-        ;
-    // TODO: turning should be curved
-    turning = true;
-    
-    stop();
-    
-    int i = 0;
-    
-    int leftPulses, rightPulses;
-    while(i < 50)
-    {
-        leftPulses = LeftEncoder->getPulses();
-        rightPulses = RightEncoder->getPulses();
-        LeftEncoder->reset();
-        RightEncoder->reset();
-        
-        if( leftPulses == 0 && rightPulses == 0)
-            i++;
-        else
-            i = 0;
-    }
-
-    //Now the mouse should have stopped appropriately.
-    turnRight();
-}
-
-void pidController::moveForward()
-{
-    int front_left_LED = 0, front_right_LED = 0, back_left_LED = 0, back_right_LED = 0;
-    *IR_out_left_front = 1;
-    for(int i = 0; i < 10; i++)
-    {
-        front_left_LED += 1000*IR_in_left_front->read();
-    }
-    front_left_LED /= 10;
-    *IR_out_left_front = 0;
-   
-    *IR_out_right_front = 1;
-    for(int i = 0; i < 10; i++)
-    {
-        front_right_LED += 1000*IR_in_right_front->read();
-    }
-    front_right_LED /= 10;
-    *IR_out_right_front = 0;
-
-    *IR_out_left_back = 1;
-    for(int i = 0; i < 10; i++)
-    {
-        back_left_LED += 1000*IR_in_left_back->read();
-    }
-    back_left_LED /= 10;
-    *IR_out_left_back = 0;
-   
-    *IR_out_right_back = 1;
-    for(int i = 0; i < 10; i++)
-    {
-        back_right_LED += 1000*IR_in_right_back->read();
-    }
-    back_right_LED /= 10;
-    *IR_out_right_back = 0;
-
-    turning = false;
-
-    if(front_left_LED > IR_FRONT_WALL || front_right_LED > IR_FRONT_WALL)
-    {
-        turnLeft();
-    }
 }
 
 void pidController::pause()
