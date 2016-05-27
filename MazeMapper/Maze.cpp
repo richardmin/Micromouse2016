@@ -175,3 +175,4 @@ bool Maze::wallOnRight() const
 }
 
 
+

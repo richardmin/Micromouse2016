@@ -6,9 +6,6 @@
 #include "LED/IRLEDConstants.h"
 #include "PID/pidController.h"
 #include "PID/pidConstants.h"
-#include "Gyro/Gyro.h"
-
-
 
 DigitalOut myled(LED1);
 DigitalIn mybutton(USER_BUTTON);
@@ -133,9 +130,8 @@ bool wallToRight()
     return (rightBackLED >= WALL_TO_RIGHT);
 }
 
-void rightWallFollower()
+void rightWallFollower(pidController pid)
 {
-    //RIGHT WALL FOLLOWER
     IR_emitter1 = 1;
     IR_emitter2 = 1;
     IR_emitter3 = 1;
@@ -163,9 +159,8 @@ void rightWallFollower()
     }
 }
 
-void leftWallFollower()
+void leftWallFollower(pidController pid)
 {
-    LEFT WALL FOLLOWER
     IR_emitter1 = 1;
     IR_emitter2 = 1;
     IR_emitter3 = 1;
@@ -193,9 +188,8 @@ void leftWallFollower()
     }
 }
 
-void 4IRRandom()
+void FourIRRandom(pidController pid)
 {
-    RANDOM MODE
     IR_emitter1 = 1;
     IR_emitter2 = 1;
     IR_emitter3 = 1;
@@ -248,7 +242,7 @@ void 4IRRandom()
     }
 }
 
-void 2IRRandom()
+void TwoIRRandom(pidController pid)
 {
     IR_emitter2 = 1;
     IR_emitter3 = 1;

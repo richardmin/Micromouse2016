@@ -3,7 +3,6 @@
 
 #include "mbed.h"
 #include "pidConstants.h"
-#include "Gyro/Gyro.h"
 #include "AVEncoder/AVEncoder.h"
 
 class pidController {
@@ -37,6 +36,10 @@ class pidController {
         void start();
         
          void moveForward();
+         
+                 // Helper functions to drive the wires connected to the motors
+        void setRightPwm(double speed); 
+        void setLeftPwm(double speed);
         
     private:
 
@@ -53,10 +56,6 @@ class pidController {
         
         // Make sure the speeds stay within the proper bounds
         void boundSpeeds();
-
-        // Helper functions to drive the wires connected to the motors
-        void setRightPwm(double speed); 
-        void setLeftPwm(double speed);
         
         // Sensor variables
         AVEncoder* LeftEncoder;

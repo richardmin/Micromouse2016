@@ -1,4 +1,3 @@
-#include <iostream>
 #include <stack>
 #include <cstdlib>  // atoi
 
@@ -371,6 +370,7 @@ void begin_controller() {
     
     maze.start();
 }
+
 
 
 

@@ -1,6 +1,5 @@
 #include "pidController.h"
 #include "AVEncoder/AVEncoder.h"
-#include "Gyro/GyroConstants.h"
 #include "LED/IRLEDConstants.h"
 #include <cmath>
 
@@ -93,24 +92,7 @@ void pidController::pid()
     *IR_out_left_back = 0;
     *IR_out_right_back = 0;
     
-    // Calculate actual translational speed
-    double actual_translational_speed = (left_encoder_pulses + right_encoder_pulses); // pulses
-    actual_translational_speed /= dt; // pulses/us
-    actual_translational_speed *= 1000000;
-    actual_translational_speed /= 360; // rotations/s      
-    actual_translational_speed *= WHEEL_CIRCUMFERENCE; // mm/s
-    actual_translational_speed /= 2; // To account for the fact that we added at the beginning
-    
-        // Calculate actual angular speed
-    double actual_angular_speed = (left_encoder_pulses - right_encoder_pulses); // pulses
-    actual_angular_speed /= dt; // pulses/us
-    actual_angular_speed *= 1000000;
-    actual_angular_speed /= 360; // rotations/s
-    actual_angular_speed  *= WHEEL_CIRCUMFERENCE; // mm/s
-    
     // Determine the error in everything
-    double translational_error = IDEAL_TRANSLATIONAL_SPEED - actual_translational_speed;
-    double angular_error = IDEAL_ANGULAR_SPEED - actual_angular_speed;
     double left_IR_error = left_IR - left_IR_base;
     double right_IR_error = right_IR - right_IR_base;
     
@@ -127,7 +109,6 @@ void pidController::pid()
     }
     if(right_IR > RIGHT_IR_WALL)
     {
-        //////printf("RIGHT WALL\t");
         //Calculate IR error based on right IR
         IR_correction_right = P_controller_IR(right_IR_error) + 
                      //I_controller_IR(right_IR_error, IRIntegrator, dt) + 
@@ -136,22 +117,10 @@ void pidController::pid()
     }
     
     IR_correction = (IR_correction_left + IR_correction_right)/2;
-    
-    double translational_correction = P_controller_translational(translational_error) +
-                                      //I_controller_translational(translational_error, translationalIntegrator, dt) +
-                                      D_controller_translational(translational_error, prevTranslationalError, dt);
-                                      
-    double angular_correction = P_controller_angular(angular_error) + 
-                                //I_controller_angular(angular_error, angularIntegrator, dt) + 
-                                D_controller_angular(angular_error, prevAngularError, dt);
-    angular_correction = 0;
-    translational_correction = 0;
                                       
     // Calculate new speeds
-    leftSpeed = DEFAULT_LEFT_SPEED + (translational_correction + angular_correction + (IR_correction/2));
-    rightSpeed = DEFAULT_RIGHT_SPEED + (translational_correction - angular_correction - (IR_correction/2)); 
-    //////////printf("LEFT: %f (%f)\tRIGHT: %f (%f) CORRECTION: %f\r\n", leftSpeed, left_IR, rightSpeed, right_IR, IR_correction);
-    //////printf("%f\t%f\t%f\r\n", translational_correction, IR_correction, (translational_correction + angular_correction - IR_correction));
+    leftSpeed = DEFAULT_LEFT_SPEED + (IR_correction/2);
+    rightSpeed = DEFAULT_RIGHT_SPEED + (IR_correction/2); 
 
     // Make sure speeds stay within the proper bounds
     boundSpeeds();
