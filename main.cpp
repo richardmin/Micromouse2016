@@ -312,7 +312,7 @@ int main()
     
     for(int i = 0; i < 4; i++)
     {
-
+        // Turn PID on
         pid.start();
         
         // Move one cell forward
@@ -321,10 +321,8 @@ int main()
         // Turn PID off
         pid.pause();
         
-        if(wallToRight())
-        {
-            pid.turnRight();
-        }
+        // Realign the rat
+        pid.realign();
         
         wait(1.0);
     }

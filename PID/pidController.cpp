@@ -311,6 +311,81 @@ void pidController::moveForwardOneCell()
     RightEncoder->reset();
 }
 
+void pidController::realign()
+{
+    // Read IR values
+    *IR_out_left_back = 1;
+    *IR_out_right_back = 1;
+    float left_IR = 0;
+    float right_IR = 0;
+    for(int i = 0; i < 10; i++)
+    {
+        left_IR += 1000*IR_in_left_back->read();
+        right_IR += 1000*IR_in_right_back->read();
+    }
+    left_IR /= 10;
+    right_IR /= 10;
+    *IR_out_left_back = 0;
+    *IR_out_right_back = 0;
+    
+    if(left_IR > LEFT_IR_WALL)
+    {
+        double left_IR_error = left_IR - left_IR_base;
+        while(abs(left_IR_error) > 5)
+        {
+            if(left_IR_error > 0)
+            {
+                setLeftPwm(0.05);
+                setRightPwm(-0.05);
+            }
+            else
+            {
+                setLeftPwm(-0.05);
+                setRightPwm(0.05);
+            }
+            
+            // Read IR values
+            *IR_out_left_back = 1;
+            left_IR = 0;
+            for(int i = 0; i < 10; i++)
+            {
+                left_IR += 1000*IR_in_left_back->read();
+            }
+            left_IR /= 10;
+            *IR_out_left_back = 0;
+        }
+    }
+    else if(right_IR > RIGHT_IR_WALL)
+    {
+        double right_IR_error = right_IR - right_IR_base;
+        while(abs(right_IR_error) > 5)
+        {
+            if(right_IR_error > 0)
+            {
+                setLeftPwm(-0.05);
+                setRightPwm(0.05);
+            }
+            else
+            {
+                setLeftPwm(0.05);
+                setRightPwm(-0.05);
+            }
+            
+            // Read IR values
+            *IR_out_right_back = 1;
+            right_IR = 0;
+            for(int i = 0; i < 10; i++)
+            {
+                right_IR += 1000*IR_in_right_back->read();
+            }
+            right_IR /= 10;
+            *IR_out_right_back = 0;
+        }
+    }
+    
+    stop();
+}
+
 void pidController::turnLeftFromMoving()
 {
     LeftEncoder->reset();

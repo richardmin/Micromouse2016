@@ -28,6 +28,7 @@ class pidController {
         void turnRight();
 
         void moveForwardOneCell();
+        void realign();
 
         void moveForwardOneCellNotMoving();
 
