@@ -303,15 +303,22 @@ int main()
     // Interrupt controller
     Ticker interrupt;
     
-    //interrupt.attach_us(&pid, &pidController::pid, 5000);
+    interrupt.attach_us(&pid, &pidController::pid, 5000);
     
     while(mybutton)
         ;
+        
+    wait(1.0);
 
-    //Intialize final things
-    // pid.start(); 
+    pid.start();
     
-    pid.turnAround();
+    // // Move one cell forward
+    // pid.moveForwardOneCell();
+        
+    // // Turn PID off
+    // pid.pause();
+    
+    // myled = 1;
 
     while(1)
     {
