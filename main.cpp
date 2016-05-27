@@ -312,7 +312,7 @@ int main()
     // Interrupt controller
     Ticker interrupt;
     
-    //interrupt.attach_us(&pid, &pidController::pid, 5000);
+    interrupt.attach_us(&pid, &pidController::pid, 5000);
     
     while(mybutton)
         ;
@@ -322,26 +322,6 @@ int main()
 
     while(1)
     {
-        pid.pid();
-        IR_emitter4 = 1;
-        float val = 0;
-        for(int i = 0; i < 10; i++)
-        {
-            val += 1000*IR_receiver4.read();
-        }
-        val /= 10;
-        if(val < 350)
-        {
-            myled = 1;
-            pid.turnRightFromMoving();
-            
-            pid.moveForwardOneCellNotMoving();
-            
-            pid.turnRight();
-//            pid.moveForwardOneCellNotMoving();
-
-            myled = 0;
-        }
-        wait(0.005);
+        ;
     }
 }

@@ -15,15 +15,13 @@ pidController::pidController(AVEncoder* left, AVEncoder* right,
   IR_out_left_back(out_left_back), IR_out_left_front(out_left_front), IR_out_right_front(out_right_front), IR_out_right_back(out_right_back)
 {
     leftSpeed = DEFAULT_LEFT_SPEED;
+    rightSpeed = DEFAULT_RIGHT_SPEED;
     
-    prevTranslationalError = 0;
-    prevAngularError = 0;
+    // Initialize variables for PID
     prevIRError = 0;
-        
-    translationalIntegrator = 0;
-    angularIntegrator = 0;
     IRIntegrator = 0;
     
+    // Calculate left IR base value
     *IR_out_left_back = 1;
     left_IR_base = 0;
     for(int i = 0; i < 100; i++)
@@ -33,17 +31,18 @@ pidController::pidController(AVEncoder* left, AVEncoder* right,
     left_IR_base /= 100;
     *IR_out_left_back = 0;
    
-    *IR_out_right_back = 1;
-    right_IR_base = 0;
-    for(int i = 0; i < 100; i++)
-    {
-        right_IR_base += 1000*IR_in_right_back->read();
-    }
-    right_IR_base /= 100;
-    *IR_out_right_back = 0;
-            
-    turning = false;
-    running = false;
+   // Valculate right ID base value
+   *IR_out_right_back = 1;
+   right_IR_base = 0;
+   for(int i = 0; i < 100; i++)
+   {
+       right_IR_base += 1000*IR_in_right_back->read();
+   }
+   right_IR_base /= 100;
+   *IR_out_right_back = 0;
+           
+   turning = false;
+   running = false;
 }
 
 void pidController::start()
@@ -72,10 +71,6 @@ void pidController::pid()
         
     // Get the time that has passed since the last PID update
     int dt = timer.read_us();
-
-    // Read the encoder for the left and right motor
-    int left_encoder_pulses = LeftEncoder->getPulses();
-    int right_encoder_pulses = RightEncoder->getPulses();
     
     // Read IR values
     *IR_out_left_back = 1;
@@ -92,22 +87,20 @@ void pidController::pid()
     *IR_out_left_back = 0;
     *IR_out_right_back = 0;
     
-    // Determine the error in everything
+    // Determine the error in IR readings
     double left_IR_error = left_IR - left_IR_base;
     double right_IR_error = right_IR - right_IR_base;
     
-    double IR_correction;
     double IR_correction_left = 0;
     double IR_correction_right = 0;
     if(left_IR > LEFT_IR_WALL)
     {
-        //////printf("LEFT WALL\t");
         //Calculate IR error based on left IR
         IR_correction_left = P_controller_IR(left_IR_error) + 
                      //I_controller_IR(left_IR_error, IRIntegrator, dt) + 
                      D_controller_IR(left_IR_error, prevIRError, dt);
     }
-    if(right_IR > RIGHT_IR_WALL)
+    else if(right_IR > RIGHT_IR_WALL)
     {
         //Calculate IR error based on right IR
         IR_correction_right = P_controller_IR(right_IR_error) + 
@@ -116,20 +109,23 @@ void pidController::pid()
         IR_correction_right = -IR_correction_right;
     }
     
-    IR_correction = (IR_correction_left + IR_correction_right)/2;
+    // Calculate the total IR correction
+    double IR_correction = (IR_correction_left + IR_correction_right)/2;
                                       
     // Calculate new speeds
-    leftSpeed = DEFAULT_LEFT_SPEED + (IR_correction/2);
-    rightSpeed = DEFAULT_RIGHT_SPEED + (IR_correction/2); 
+    leftSpeed = DEFAULT_LEFT_SPEED + IR_correction;
+    rightSpeed = DEFAULT_RIGHT_SPEED - IR_correction; 
 
     // Make sure speeds stay within the proper bounds
     boundSpeeds();
     
+    // We don't want the mouse to be able to move backwards
     if(leftSpeed < 0)
         leftSpeed = 0;
     if(rightSpeed < 0)
         rightSpeed = 0;
     
+    // Set the new speeds
     setLeftPwm(leftSpeed);
     setRightPwm(rightSpeed);
      
@@ -137,54 +133,6 @@ void pidController::pid()
     LeftEncoder->reset();
     RightEncoder->reset();
     timer.reset();
-}
-double pidController::P_controller_translational(double error)
-{
-    return (KP_translational*error);
-}
-
-double pidController::I_controller_translational(double error, unsigned int& integrator, int dt)
-{
-    integrator += (error*dt)/1000000;
-    if(integrator > 0.01/KI_translational)
-            integrator /= DECAY_FACTOR;
-                
-    double correction = KI_translational * integrator;
-        
-    return correction;
-}
-
-double pidController::D_controller_translational(double error, double& prevError, int dt)
-{   
-    double dError = error - prevError;
-        
-    prevError = error;
-    
-    return KD_translational*dError/(1000*dt);
-}
-
-double pidController::P_controller_angular(double error)
-{
-    return (KP_angular*error);
-}
-
-double pidController::I_controller_angular(double error, unsigned int& integrator, int dt)
-{
-    integrator += (error*dt)/1000000;
-        integrator /= DECAY_FACTOR;
-    
-    double correction = KI_angular * integrator;
-        
-    return correction;
-}
-
-double pidController::D_controller_angular(double error, double& prevError, int dt)
-{   
-    double dError = error - prevError;
-        
-    prevError = error;
-    
-    return KD_angular*dError/(1000*dt);
 }
 
 double pidController::P_controller_IR(double error)
@@ -337,7 +285,6 @@ void pidController::moveForwardOneCellNotMoving()
         ;
 }
         
-
 void pidController::turnRightFromMoving()
 {
     LeftEncoder->reset();
@@ -368,6 +315,7 @@ void pidController::turnRightFromMoving()
     //Now the mouse should have stopped appropriately.
     turnRight();
 }
+
 void pidController::turnRight()
 {
     // TODO: turning should be curved

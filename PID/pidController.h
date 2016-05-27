@@ -44,12 +44,6 @@ class pidController {
     private:
 
         // Helper functions to determine PID correction
-        double P_controller_translational(double error);
-        double I_controller_translational(double error, unsigned int& integrator, int dt);
-        double D_controller_translational(double error, double& prevError, int dt);
-        double P_controller_angular(double error);
-        double I_controller_angular(double error, unsigned int& integrator, int dt);
-        double D_controller_angular(double error, double& prevError, int dt);
         double P_controller_IR(double error);
         double I_controller_IR(double error, unsigned int& integrator, int dt);
         double D_controller_IR(double error, double& prevError, int dt);
@@ -87,13 +81,9 @@ class pidController {
         bool turning;
         
         // Derivative variables
-        double prevTranslationalError;
-        double prevAngularError;
         double prevIRError;
         
         // Integral variables
-        unsigned int translationalIntegrator;
-        unsigned int angularIntegrator;
         unsigned int IRIntegrator;
         
         // IR error
