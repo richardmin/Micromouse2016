@@ -321,6 +321,11 @@ int main()
         // Turn PID off
         pid.pause();
         
+        if(wallToRight())
+        {
+            pid.turnRight();
+        }
+        
         wait(1.0);
     }
     
