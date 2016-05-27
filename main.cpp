@@ -288,8 +288,6 @@ void TwoIRRandom(pidController pid)
  
 int main()  
 {           
-
-
     uint32_t seed =0;
     const int loops = 1; // increase if LSB has a bias. 
      
