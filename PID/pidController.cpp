@@ -341,6 +341,7 @@ void pidController::realign()
             }
             left_IR /= 10;
             *IR_out_left_back = 0;
+            left_IR_error = left_IR - left_IR_base;
         }
     }
     else if(right_IR > RIGHT_IR_WALL)
@@ -368,6 +369,7 @@ void pidController::realign()
             }
             right_IR /= 10;
             *IR_out_right_back = 0;
+            right_IR_error = right_IR - right_IR_base;
         }
     }
     
